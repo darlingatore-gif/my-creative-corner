@@ -15,6 +15,8 @@ import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as CarnetsIndexRouteImport } from './routes/carnets.index'
 import { Route as CarnetsIdIndexRouteImport } from './routes/carnets.$id.index'
+import { Route as CarnetsIdLectureRouteImport } from './routes/carnets.$id.lecture'
+import { Route as CarnetsIdPagePageIdRouteImport } from './routes/carnets.$id.page.$pageId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +48,16 @@ const CarnetsIdIndexRoute = CarnetsIdIndexRouteImport.update({
   path: '/carnets/$id/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarnetsIdLectureRoute = CarnetsIdLectureRouteImport.update({
+  id: '/carnets/$id/lecture',
+  path: '/carnets/$id/lecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CarnetsIdPagePageIdRoute = CarnetsIdPagePageIdRouteImport.update({
+  id: '/carnets/$id/page/$pageId',
+  path: '/carnets/$id/page/$pageId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,7 +65,9 @@ export interface FileRoutesByFullPath {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
+  '/carnets/$id/lecture': typeof CarnetsIdLectureRoute
   '/carnets/$id/': typeof CarnetsIdIndexRoute
+  '/carnets/$id/page/$pageId': typeof CarnetsIdPagePageIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +75,9 @@ export interface FileRoutesByTo {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets': typeof CarnetsIndexRoute
+  '/carnets/$id/lecture': typeof CarnetsIdLectureRoute
   '/carnets/$id': typeof CarnetsIdIndexRoute
+  '/carnets/$id/page/$pageId': typeof CarnetsIdPagePageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,14 +86,31 @@ export interface FileRoutesById {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
+  '/carnets/$id/lecture': typeof CarnetsIdLectureRoute
   '/carnets/$id/': typeof CarnetsIdIndexRoute
+  '/carnets/$id/page/$pageId': typeof CarnetsIdPagePageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/creer' | '/favoris' | '/profil' | '/carnets/' | '/carnets/$id/'
+    | '/'
+    | '/creer'
+    | '/favoris'
+    | '/profil'
+    | '/carnets/'
+    | '/carnets/$id/lecture'
+    | '/carnets/$id/'
+    | '/carnets/$id/page/$pageId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer' | '/favoris' | '/profil' | '/carnets' | '/carnets/$id'
+  to:
+    | '/'
+    | '/creer'
+    | '/favoris'
+    | '/profil'
+    | '/carnets'
+    | '/carnets/$id/lecture'
+    | '/carnets/$id'
+    | '/carnets/$id/page/$pageId'
   id:
     | '__root__'
     | '/'
@@ -85,7 +118,9 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/profil'
     | '/carnets/'
+    | '/carnets/$id/lecture'
     | '/carnets/$id/'
+    | '/carnets/$id/page/$pageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,7 +129,9 @@ export interface RootRouteChildren {
   FavorisRoute: typeof FavorisRoute
   ProfilRoute: typeof ProfilRoute
   CarnetsIndexRoute: typeof CarnetsIndexRoute
+  CarnetsIdLectureRoute: typeof CarnetsIdLectureRoute
   CarnetsIdIndexRoute: typeof CarnetsIdIndexRoute
+  CarnetsIdPagePageIdRoute: typeof CarnetsIdPagePageIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,6 +178,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CarnetsIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/carnets/$id/lecture': {
+      id: '/carnets/$id/lecture'
+      path: '/carnets/$id/lecture'
+      fullPath: '/carnets/$id/lecture'
+      preLoaderRoute: typeof CarnetsIdLectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/carnets/$id/page/$pageId': {
+      id: '/carnets/$id/page/$pageId'
+      path: '/carnets/$id/page/$pageId'
+      fullPath: '/carnets/$id/page/$pageId'
+      preLoaderRoute: typeof CarnetsIdPagePageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -150,8 +201,20 @@ const rootRouteChildren: RootRouteChildren = {
   FavorisRoute: FavorisRoute,
   ProfilRoute: ProfilRoute,
   CarnetsIndexRoute: CarnetsIndexRoute,
+  CarnetsIdLectureRoute: CarnetsIdLectureRoute,
   CarnetsIdIndexRoute: CarnetsIdIndexRoute,
+  CarnetsIdPagePageIdRoute: CarnetsIdPagePageIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
