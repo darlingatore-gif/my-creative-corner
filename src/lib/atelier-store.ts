@@ -13,7 +13,7 @@ export type PageElement = {
   w: number; // percentage
   rotation: number;
   content: string;
-  color?: Palette;
+  color?: Palette | undefined;
 };
 
 export type NotebookPage = {
