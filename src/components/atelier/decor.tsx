@@ -70,18 +70,18 @@ export function coverBackground(palette: Palette, cover: CoverStyle): CSSPropert
     case "rayures":
       return {
         ...base,
-        backgroundImage: `repeating-linear-gradient(115deg, ${a(14)} 0 8px, transparent 8px 20px)`,
+        backgroundImage: `repeating-linear-gradient(115deg, ${a(24)} 0 8px, transparent 8px 20px)`,
       };
     case "pois":
       return {
         ...base,
-        backgroundImage: `radial-gradient(${a(20)} 1.8px, transparent 2px)`,
+        backgroundImage: `radial-gradient(${a(32)} 1.8px, transparent 2px)`,
         backgroundSize: "16px 16px",
       };
     case "quadrille":
       return {
         ...base,
-        backgroundImage: `linear-gradient(${a(12)} 1px, transparent 1px), linear-gradient(90deg, ${a(12)} 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(${a(20)} 1px, transparent 1px), linear-gradient(90deg, ${a(20)} 1px, transparent 1px)`,
         backgroundSize: "18px 18px",
       };
     case "degrade":
@@ -91,7 +91,7 @@ export function coverBackground(palette: Palette, cover: CoverStyle): CSSPropert
     case "fleurs":
       return {
         ...base,
-        backgroundImage: `radial-gradient(circle at 22% 28%, ${a(20)} 0 9%, transparent 10%), radial-gradient(circle at 70% 62%, oklch(0.79 0.1 85 / 0.35) 0 7%, transparent 8%), radial-gradient(circle at 84% 18%, ${a(16)} 0 6%, transparent 7%)`,
+        backgroundImage: `radial-gradient(circle at 22% 28%, ${a(32)} 0 9%, transparent 10%), radial-gradient(circle at 70% 62%, oklch(0.79 0.1 85 / 0.35) 0 7%, transparent 8%), radial-gradient(circle at 84% 18%, ${a(26)} 0 6%, transparent 7%)`,
       };
     default:
       return base;
