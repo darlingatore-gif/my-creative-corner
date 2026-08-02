@@ -14,6 +14,7 @@ import { Route as CreerRouteImport } from './routes/creer'
 import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as CarnetsIndexRouteImport } from './routes/carnets.index'
+import { Route as CarnetsIdIndexRouteImport } from './routes/carnets.$id.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const CarnetsIndexRoute = CarnetsIndexRouteImport.update({
   path: '/carnets/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarnetsIdIndexRoute = CarnetsIdIndexRouteImport.update({
+  id: '/carnets/$id/',
+  path: '/carnets/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
+  '/carnets/$id/': typeof CarnetsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets': typeof CarnetsIndexRoute
+  '/carnets/$id': typeof CarnetsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/favoris': typeof FavorisRoute
   '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
+  '/carnets/$id/': typeof CarnetsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/creer' | '/favoris' | '/profil' | '/carnets/'
+  fullPaths:
+    '/' | '/creer' | '/favoris' | '/profil' | '/carnets/' | '/carnets/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer' | '/favoris' | '/profil' | '/carnets'
-  id: '__root__' | '/' | '/creer' | '/favoris' | '/profil' | '/carnets/'
+  to: '/' | '/creer' | '/favoris' | '/profil' | '/carnets' | '/carnets/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/creer'
+    | '/favoris'
+    | '/profil'
+    | '/carnets/'
+    | '/carnets/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   FavorisRoute: typeof FavorisRoute
   ProfilRoute: typeof ProfilRoute
   CarnetsIndexRoute: typeof CarnetsIndexRoute
+  CarnetsIdIndexRoute: typeof CarnetsIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CarnetsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/carnets/$id/': {
+      id: '/carnets/$id/'
+      path: '/carnets/$id'
+      fullPath: '/carnets/$id/'
+      preLoaderRoute: typeof CarnetsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavorisRoute: FavorisRoute,
   ProfilRoute: ProfilRoute,
   CarnetsIndexRoute: CarnetsIndexRoute,
+  CarnetsIdIndexRoute: CarnetsIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

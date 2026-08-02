@@ -15,7 +15,7 @@ export function pageBackground(bg: NotebookPage["background"]): CSSProperties {
   return { backgroundColor: paletteCss[bg].bg };
 }
 
-export function ElementView({ element, compact }: { element: PageElement; compact?: boolean }) {
+export function ElementView({ element, compact }: { element: PageElement; compact?: boolean | undefined }) {
   const tone = element.color ? paletteCss[element.color] : paletteCss.rose;
   switch (element.kind) {
     case "texte":
