@@ -60,35 +60,38 @@ export function Squiggle({ className }: { className?: string }) {
   );
 }
 
+const alpha = (c: string, pct: number) => `color-mix(in oklab, ${c} ${pct}%, transparent)`;
+
 export function coverBackground(palette: Palette, cover: CoverStyle): CSSProperties {
   const { bg, deep } = paletteCss[palette];
+  const a = (pct: number) => alpha(deep, pct);
   const base: CSSProperties = { backgroundColor: bg };
   switch (cover) {
     case "rayures":
       return {
         ...base,
-        backgroundImage: `repeating-linear-gradient(115deg, ${deep}22 0 8px, transparent 8px 20px)`,
+        backgroundImage: `repeating-linear-gradient(115deg, ${a(14)} 0 8px, transparent 8px 20px)`,
       };
     case "pois":
       return {
         ...base,
-        backgroundImage: `radial-gradient(${deep}33 1.8px, transparent 2px)`,
+        backgroundImage: `radial-gradient(${a(20)} 1.8px, transparent 2px)`,
         backgroundSize: "16px 16px",
       };
     case "quadrille":
       return {
         ...base,
-        backgroundImage: `linear-gradient(${deep}1f 1px, transparent 1px), linear-gradient(90deg, ${deep}1f 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(${a(12)} 1px, transparent 1px), linear-gradient(90deg, ${a(12)} 1px, transparent 1px)`,
         backgroundSize: "18px 18px",
       };
     case "degrade":
       return {
-        backgroundImage: `linear-gradient(160deg, ${bg}, oklch(0.97 0.02 80) 55%, ${deep}55)`,
+        backgroundImage: `linear-gradient(160deg, ${bg}, oklch(0.97 0.02 80) 55%, ${a(34)})`,
       };
     case "fleurs":
       return {
         ...base,
-        backgroundImage: `radial-gradient(circle at 22% 28%, ${deep}33 0 9%, transparent 10%), radial-gradient(circle at 70% 62%, oklch(0.79 0.1 85 / 0.35) 0 7%, transparent 8%), radial-gradient(circle at 84% 18%, ${deep}26 0 6%, transparent 7%)`,
+        backgroundImage: `radial-gradient(circle at 22% 28%, ${a(20)} 0 9%, transparent 10%), radial-gradient(circle at 70% 62%, oklch(0.79 0.1 85 / 0.35) 0 7%, transparent 8%), radial-gradient(circle at 84% 18%, ${a(16)} 0 6%, transparent 7%)`,
       };
     default:
       return base;
