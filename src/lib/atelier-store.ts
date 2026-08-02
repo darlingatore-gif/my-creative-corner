@@ -57,7 +57,7 @@ export const paletteCss: Record<Palette, { bg: string; deep: string }> = {
 export const categories = ["Lecture", "Inspiration", "Souvenirs", "Écriture", "Créatif"];
 
 let seq = 0;
-const uid = (p = "id") => `${p}-${Date.now().toString(36)}-${(seq++).toString(36)}`;
+const uid = (p = "id") => `${p}-${(seq++).toString(36)}`;
 
 function el(
   kind: ElementKind,
