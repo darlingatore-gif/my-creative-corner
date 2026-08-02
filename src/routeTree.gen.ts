@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreerRouteImport } from './routes/creer'
+import { Route as FavorisRouteImport } from './routes/favoris'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as CarnetsIndexRouteImport } from './routes/carnets.index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +25,16 @@ const CreerRoute = CreerRouteImport.update({
   path: '/creer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FavorisRoute = FavorisRouteImport.update({
+  id: '/favoris',
+  path: '/favoris',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CarnetsIndexRoute = CarnetsIndexRouteImport.update({
   id: '/carnets/',
   path: '/carnets/',
@@ -32,30 +44,38 @@ const CarnetsIndexRoute = CarnetsIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/favoris': typeof FavorisRoute
+  '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/favoris': typeof FavorisRoute
+  '/profil': typeof ProfilRoute
   '/carnets': typeof CarnetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/creer': typeof CreerRoute
+  '/favoris': typeof FavorisRoute
+  '/profil': typeof ProfilRoute
   '/carnets/': typeof CarnetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/creer' | '/carnets/'
+  fullPaths: '/' | '/creer' | '/favoris' | '/profil' | '/carnets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/creer' | '/carnets'
-  id: '__root__' | '/' | '/creer' | '/carnets/'
+  to: '/' | '/creer' | '/favoris' | '/profil' | '/carnets'
+  id: '__root__' | '/' | '/creer' | '/favoris' | '/profil' | '/carnets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreerRoute: typeof CreerRoute
+  FavorisRoute: typeof FavorisRoute
+  ProfilRoute: typeof ProfilRoute
   CarnetsIndexRoute: typeof CarnetsIndexRoute
 }
 
@@ -75,6 +95,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favoris': {
+      id: '/favoris'
+      path: '/favoris'
+      fullPath: '/favoris'
+      preLoaderRoute: typeof FavorisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/carnets/': {
       id: '/carnets/'
       path: '/carnets'
@@ -88,6 +122,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreerRoute: CreerRoute,
+  FavorisRoute: FavorisRoute,
+  ProfilRoute: ProfilRoute,
   CarnetsIndexRoute: CarnetsIndexRoute,
 }
 export const routeTree = rootRouteImport
