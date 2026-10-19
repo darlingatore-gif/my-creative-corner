@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7efe5">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Bibliothèque Enchantée">
+  <meta name="description" content="Bibliothèque virtuelle interactive avec décor conte illustré, vrais livres et statistiques de lecture.">
+  <title>Ma Bibliothèque Enchantée — V3 Cosy</title>
+  <style>
+:root{
+  --bg:#f8f2e8;
+  --panel:#fffaf2;
+  --line:#e7ddd0;
+  --ink:#5e5548;
+  --muted:#8e8478;
+  --green:#6f8a72;
+  --rose:#bd8c96;
+  --shadow:0 14px 40px rgba(96,69,47,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:linear-gradient(180deg,#fbf6ef,#f4ecdf);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+body{min-height:100vh}
+.app-shell{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}
+.sidebar{padding:24px 18px;border-right:1px solid var(--line);background:rgba(255,251,244,.7);backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:20px}
+.brand-block{display:flex;gap:14px;align-items:center;padding:6px 4px}
+.brand-mark{width:52px;height:52px;border-radius:18px;background:linear-gradient(180deg,#fff8ef,#efdfc9);display:grid;place-items:center;font-size:26px;box-shadow:var(--shadow)}
+.brand-block h1{margin:0;font-family:Georgia,serif;font-size:21px;font-weight:500;line-height:1.2}
+.brand-block p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.main-nav{display:grid;gap:10px}
+.nav-item{border:1px solid var(--line);background:#fffdf8;border-radius:16px;padding:14px 16px;text-align:left;color:var(--ink)}
+.nav-item.active{background:linear-gradient(180deg,#eef4e8,#fff8f1);border-color:#cad7c4;color:#46624b;font-weight:700}
+.side-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
+.side-card strong{display:block;margin-bottom:10px;font-family:Georgia,serif;font-weight:500}
+.side-card ul{margin:0;padding-left:18px;color:var(--muted);display:grid;gap:6px;font-size:14px}
+.sidebar-actions{display:grid;gap:10px;margin-top:auto}
+.soft-btn{border:1px dashed #d8cdbf;background:#fffdf8;padding:12px 14px;border-radius:14px;color:#65594d}
+.main-column{display:grid;grid-template-rows:auto 1fr auto;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 26px;border-bottom:1px solid var(--line);background:rgba(255,251,244,.6);backdrop-filter:blur(8px)}
+.eyebrow{font-size:11px;letter-spacing:.16em;color:#a38f79;font-weight:700}
+.topbar-title{margin-top:5px;font-family:Georgia,serif;font-size:22px}
+.save-pill{display:inline-flex;gap:10px;align-items:center;background:#fffdf8;border:1px solid var(--line);padding:10px 14px;border-radius:999px;color:var(--muted);font-size:13px}
+.save-pill span{width:10px;height:10px;border-radius:50%;background:#86a57c;display:block}
+#app-content{padding:28px}
+.footer{padding:10px 28px 22px;color:#9b8f82;font-size:13px}
+.page-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap}
+.page-head h2{margin:6px 0 8px;font-family:Georgia,serif;font-size:38px;font-weight:500}
+.page-head p{margin:0;color:var(--muted);max-width:760px;line-height:1.65}
+.head-actions{display:flex;gap:10px;flex-wrap:wrap}
+.surface{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.btn,.mini-btn{border:1px solid #d8ccbc;background:#fffdf9;color:#62584d;border-radius:14px;padding:12px 15px}
+.btn:hover,.mini-btn:hover,.nav-item:hover,.soft-btn:hover{filter:brightness(.985)}
+.btn-primary{background:linear-gradient(180deg,#7f977f,#688069);color:#fff;border-color:#62795f}
+.btn-small{padding:9px 11px;border-radius:11px;font-size:13px}
+.mini-btn{padding:9px 10px;border-radius:12px;line-height:1}
+.danger{background:#fff4f2;border-color:#e7c0bd;color:#954b49}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border-radius:999px;background:#edf3ea;color:#5f785f;font-size:12px;font-weight:700}
+.badge.soft{background:#f4ece1;color:#8d7f6e}
+.rooms-layout{display:grid;grid-template-columns:minmax(0,1.35fr) 360px;gap:18px;align-items:start}
+.room-card,.editor-card,.list-panel,.form-panel,.chart-card,.stat-box{padding:18px}
+.room-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.room-toolbar-left,.room-toolbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.room-toolbar select,.select-input,.text-input,.textarea-input{width:100%;border:1px solid var(--line);background:#fffdf9;border-radius:14px;padding:12px 14px;color:var(--ink)}
+.room-toolbar select{min-width:220px}
+.room-scroll{overflow:auto;border-radius:22px;border:1px solid #eadfce;background:#f2e8dc;padding:14px}
+.storybook-room{position:relative;width:1380px;height:860px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,#f7ebd8 0%, #f7ebd8 66%, rgba(0,0,0,0) 66%), linear-gradient(180deg,#d7b084,#c09668);box-shadow:inset 0 0 0 5px rgba(255,255,255,.23), inset 0 -70px 110px rgba(112,74,40,.08)}
+.storybook-room:after{content:'';position:absolute;left:0;right:0;bottom:0;height:250px;background:repeating-linear-gradient(90deg,rgba(112,74,40,.18) 0 4px, rgba(112,74,40,0) 4px 120px), linear-gradient(180deg,#d3b08a,#b6875e)}
+.storybook-room.wall-cream{background:linear-gradient(180deg,#f2e5d1 0%,#f2e5d1 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#d7b084,#c09668)}
+.storybook-room.wall-rose{background:linear-gradient(180deg,#eed7d5 0%,#eed7d5 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#d7b084,#c09668)}
+.storybook-room.wall-sage{background:linear-gradient(180deg,#d7e4d4 0%,#d7e4d4 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#d7b084,#c09668)}
+.storybook-room.wall-blue{background:linear-gradient(180deg,#dbe5ef 0%,#dbe5ef 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#d7b084,#c09668)}
+.storybook-room.wall-plum{background:linear-gradient(180deg,#e6d8e8 0%,#e6d8e8 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#d7b084,#c09668)}
+.storybook-room.wall-dusk{background:linear-gradient(180deg,#7c869d 0%,#7c869d 67%,rgba(0,0,0,0) 67%), linear-gradient(180deg,#c39c74,#a87953)}
+.storybook-room.floor-honey:after{background:repeating-linear-gradient(90deg,rgba(112,74,40,.16) 0 4px, rgba(112,74,40,0) 4px 120px), linear-gradient(180deg,#d3b08a,#b6875e)}
+.storybook-room.floor-walnut:after{background:repeating-linear-gradient(90deg,rgba(70,39,18,.2) 0 4px, rgba(112,74,40,0) 4px 120px), linear-gradient(180deg,#a17958,#7b573f)}
+.storybook-room.floor-ivory:after{background:repeating-linear-gradient(90deg,rgba(136,111,88,.12) 0 4px, rgba(112,74,40,0) 4px 120px), linear-gradient(180deg,#d8c8b4,#c7b097)}
+.wallpaper-stars{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.25) 1px, transparent 1px);background-size:38px 38px;opacity:.35}
+.slot-object{position:absolute;transition:transform .16s ease, box-shadow .16s ease;cursor:pointer}
+.slot-object:hover{transform:translateY(-2px)}
+.slot-object.selected{filter:drop-shadow(0 0 0 4px rgba(255,255,255,.45)) drop-shadow(0 8px 16px rgba(95,70,50,.14))}
+.window-frame{left:480px;top:78px;width:250px;height:220px;border-radius:120px 120px 22px 22px;background:#f7f0e0;border:8px solid #d3bf9e;box-shadow:0 12px 18px rgba(70,51,28,.12)}
+.window-view{position:absolute;inset:14px;border-radius:110px 110px 12px 12px;overflow:hidden;background:linear-gradient(180deg,#dbeffd,#d5edc5)}
+.window-view.autumn{background:linear-gradient(180deg,#cfe2ff,#f3d7a2)}
+.window-view.night{background:linear-gradient(180deg,#1f335d,#384f7a)}
+.window-view.rain{background:linear-gradient(180deg,#bed2e4,#a3c4d8)}
+.window-bars{position:absolute;inset:0;background:linear-gradient(90deg,transparent 46%,rgba(255,255,255,.7) 46% 54%,transparent 54%), linear-gradient(0deg,transparent 52%,rgba(255,255,255,.7) 52% 56%,transparent 56%)}
+.window-view .moon{position:absolute;top:22px;right:36px;width:40px;height:40px;border-radius:50%;background:#fff8d9;box-shadow:-10px 0 0 #e9dca8 inset}
+.window-view .star{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff3d0}.window-view .star.a{left:48px;top:40px}.window-view .star.b{left:90px;top:76px}
+.window-view .leaf{position:absolute;width:20px;height:11px;border-radius:20px 20px 20px 0;transform:rotate(-35deg);background:#d87b4e}.window-view .leaf.a{bottom:50px;left:48px}.window-view .leaf.b{bottom:74px;right:56px;background:#f0b15a}
+.window-view .hill{position:absolute;left:-10px;right:-10px;bottom:-14px;height:82px;background:radial-gradient(circle at 25% 30%,#86bf7c 0 34%, transparent 35%),linear-gradient(180deg,#7cab6d,#5e8d5c);border-radius:60% 60% 0 0}
+.rain-lines{position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 12px,rgba(255,255,255,.45) 12px 14px,transparent 14px 28px)}
+.painting-frame{left:792px;top:110px;width:180px;height:120px;background:#b78f57;padding:12px;border-radius:16px;box-shadow:0 10px 16px rgba(90,58,28,.14)}
+.painting-inner{height:100%;border-radius:10px;overflow:hidden;border:3px solid rgba(255,255,255,.5)}
+.painting-art{height:100%}.painting-art.landscape{background:linear-gradient(180deg,#d8edff 0 40%,#b5d3a9 40% 60%,#87a56d 60%)}
+.painting-art.flowers{background:radial-gradient(circle at 25% 30%,#fff 0 12%,transparent 13%),radial-gradient(circle at 50% 55%,#ef9ca7 0 12%,transparent 13%),radial-gradient(circle at 70% 35%,#f4d276 0 11%,transparent 12%),linear-gradient(180deg,#f9eedf,#d7e1c3)}
+.painting-art.night{background:radial-gradient(circle at 70% 25%,#fff2c9 0 10%,transparent 11%),linear-gradient(180deg,#233862,#324a74 50%,#55657d)}
+.fireplace{left:560px;top:365px;width:265px;height:198px;border-radius:28px 28px 16px 16px;background:#e5d6c7;box-shadow:0 18px 22px rgba(65,39,15,.12)}
+.fireplace.variant-stone{background:linear-gradient(180deg,#e7dbd1,#dac5b1)} .fireplace.variant-cream{background:linear-gradient(180deg,#f3ede7,#ddd2c5)} .fireplace.variant-walnut{background:linear-gradient(180deg,#c59d75,#9b7457)}
+.fireplace-fire{position:absolute;left:65px;right:65px;bottom:18px;height:80px;background:radial-gradient(circle at 50% 100%,#ffcb7f 0 25%,transparent 26%),radial-gradient(circle at 40% 65%,#ff824d 0 30%,transparent 31%),radial-gradient(circle at 63% 65%,#ffd07d 0 28%,transparent 29%),linear-gradient(180deg,#665041,#2d231d);border-radius:18px 18px 10px 10px}
+.mantel-books{position:absolute;left:24px;right:24px;top:18px;height:18px;background:linear-gradient(90deg,#7d9b79 0 18%, #d49ea4 18% 28%, #9a7ea8 28% 45%, #d9c89c 45% 55%, #8098ba 55% 70%, #9d7a56 70% 85%, #6d7f67 85% 100%);border-radius:10px}
+.shelf-area{width:210px;height:410px}
+.shelf-a{left:46px;top:226px}.shelf-b{left:282px;top:252px}.shelf-c{left:904px;top:252px}.shelf-d{left:1138px;top:226px}
+.bookshelf{position:absolute;inset:0;border-radius:18px;background:#b89368;box-shadow:0 16px 18px rgba(63,42,24,.12);padding:14px;display:grid;grid-template-rows:auto 1fr auto}
+.bookshelf.variant-oak{background:linear-gradient(180deg,#b98d60,#a4764c)}
+.bookshelf.variant-sage{background:linear-gradient(180deg,#b9c8b8,#96aa95)}
+.bookshelf.variant-rose{background:linear-gradient(180deg,#d8b0b2,#bb8d94)}
+.bookshelf.variant-ivory{background:linear-gradient(180deg,#e4dbd0,#c5b8a8)}
+.bookshelf-top,.bookshelf-base{background:rgba(255,255,255,.28);border-radius:10px;padding:6px 8px;text-align:center;font-size:12px;font-weight:700;color:#5a4d42}
+.shelf-rows{display:grid;gap:12px;padding:12px 0}
+.shelf-row{height:72px;border-radius:10px;background:rgba(255,255,255,.18);display:flex;gap:4px;align-items:flex-end;padding:6px 8px;overflow:hidden;box-shadow:inset 0 -3px 0 rgba(92,63,35,.18)}
+.spine{display:inline-flex;align-items:flex-end;justify-content:center;width:12px;height:54px;border-radius:3px 3px 0 0;color:#fff;font-size:9px;font-weight:800;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.spine i{font-style:normal;transform:rotate(-90deg);margin-bottom:16px;opacity:.86}
+.spine.cover{background-size:cover;background-position:center;width:14px}
+.spine.ghost{background:rgba(255,255,255,.20);box-shadow:none}
+.empty-slot-label{display:grid;place-items:center;height:100%;border:2px dashed rgba(124,96,70,.35);border-radius:18px;color:#8c7d6e;background:rgba(255,255,255,.18);font-weight:700}
+.plant{width:120px;height:200px}.pot-a{left:240px;top:492px}.pot-b{left:1000px;top:505px}
+.pot{position:absolute;left:28px;right:28px;bottom:0;height:58px;border-radius:20px 20px 8px 8px;background:linear-gradient(180deg,#d1a38a,#b77e62);box-shadow:0 10px 16px rgba(61,36,14,.14)}
+.leaves{position:absolute;left:8px;right:8px;bottom:46px;height:140px}.leaves span{position:absolute;left:50%;bottom:0;width:18px;height:86px;border-radius:20px 20px 0 20px;transform-origin:bottom center;background:linear-gradient(180deg,#82b571,#4e7e53)}
+.leaves.fern span{transform:translateX(-50%) rotate(calc(-40deg + var(--i) * 10deg))}
+.leaves.flower span{transform:translateX(-50%) rotate(calc(-35deg + var(--i) * 16deg));background:linear-gradient(180deg,#88b96e,#537f52)}
+.leaves.ivy span{transform:translateX(-50%) rotate(calc(-50deg + var(--i) * 12deg));height:100px;background:linear-gradient(180deg,#7dac71,#456d49)}
+.leaves.flower span::after{content:'';position:absolute;top:-7px;left:2px;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,#f8f4de 0 25%, #e48ca4 26% 100%)}
+.rug{left:338px;top:560px;width:692px;height:188px;border-radius:50%;background:radial-gradient(circle,#f3e6d2,#dcb69d)}
+.rug.variant-floral{background:radial-gradient(circle at 50% 50%,#f7eddf 0 28%,#dcbeaa 29% 45%,#f3e3d1 46% 58%,#c89ca0 59% 64%,#efdccc 65%)}
+.rug.variant-oval{background:radial-gradient(circle at 50% 50%,#fbf3e6 0 36%,#e2c2a9 37% 48%,#cdb49e 49%)}
+.rug.variant-forest{background:radial-gradient(circle at 50% 50%,#e8ede1 0 30%,#aac2a0 31% 48%,#dce6d2 49%)}
+.rug.variant-sun{background:radial-gradient(circle at 50% 50%,#fff1c5 0 22%,#f2d58b 23% 36%,#f8ead2 37% 52%,#d8c09b 53%)}
+.sofa{left:275px;top:482px;width:320px;height:170px;border-radius:34px;background:#cca6af;box-shadow:0 18px 20px rgba(67,43,27,.12)}
+.sofa.variant-rose{background:linear-gradient(180deg,#d5a8b1,#b98a94)}
+.sofa.variant-sage{background:linear-gradient(180deg,#b8c9b6,#95a794)}
+.sofa.variant-gold{background:linear-gradient(180deg,#d5bd93,#b89c71)}
+.sofa.variant-plum{background:linear-gradient(180deg,#b9a2c7,#947daa)}
+.sofa-seat{position:absolute;inset:20px 18px 16px;border-radius:26px;background:rgba(255,255,255,.16)}
+.sofa-pillows{position:absolute;left:28px;right:28px;top:22px;height:32px;background:radial-gradient(circle at 22% 50%,rgba(255,255,255,.45) 0 18%,transparent 19%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.45) 0 18%,transparent 19%),radial-gradient(circle at 78% 50%,rgba(255,255,255,.45) 0 18%,transparent 19%)}
+.chair{left:953px;top:498px;width:154px;height:148px;border-radius:40px;background:#95ab8e;box-shadow:0 14px 18px rgba(67,43,27,.12)}
+.chair.variant-rose{background:linear-gradient(180deg,#d8afb7,#b5888f)} .chair.variant-forest{background:linear-gradient(180deg,#a8b99f,#7f9478)} .chair.variant-gold{background:linear-gradient(180deg,#dfca9f,#b79b6d)} .chair.variant-cream{background:linear-gradient(180deg,#f4eee7,#ded0c4)}
+.chair-seat{position:absolute;inset:16px;border-radius:28px;background:rgba(255,255,255,.18)}
+.coffee-table{left:632px;top:618px;width:170px;height:86px;border-radius:22px;background:#bc9267;box-shadow:0 12px 16px rgba(67,43,27,.12)}
+.coffee-table.variant-cream{background:linear-gradient(180deg,#efe5d8,#d3c1ad)} .coffee-table.variant-walnut{background:linear-gradient(180deg,#a77e5e,#7a563f)} .coffee-table.variant-wood{background:linear-gradient(180deg,#c89a6d,#a6764d)}
+.tea-set{position:absolute;left:28px;top:18px;width:36px;height:26px;border-radius:20px;background:#f7f2ea;box-shadow:22px 0 0 #f7f2ea}
+.open-book{position:absolute;right:24px;top:18px;width:54px;height:30px;background:linear-gradient(90deg,#fffdf7 0 50%,#f1e7d7 50%);border-radius:8px;box-shadow:inset -1px 0 0 rgba(103,83,67,.18)}
+.floor-lamp{left:1138px;top:435px;width:70px;height:220px}.lamp-shade{position:absolute;top:0;left:0;right:0;height:70px;border-radius:50% 50% 14px 14px;background:#d9ba73}.floor-lamp.variant-cream .lamp-shade{background:#efe7d2}.floor-lamp.variant-forest .lamp-shade{background:#9caf97}.lamp-light{position:absolute;top:22px;left:-72px;width:210px;height:150px;background:radial-gradient(circle at top,#fff4c8 0,#fff3b167 35%,transparent 70%)}.floor-lamp:after{content:'';position:absolute;left:30px;top:58px;bottom:0;width:7px;border-radius:8px;background:#8b6c4c}.floor-lamp:before{content:'';position:absolute;left:18px;bottom:0;width:32px;height:12px;border-radius:10px;background:#8b6c4c}
+.editor-card h3,.form-panel h3,.list-title,.chart-title{margin:0 0 14px;font-family:Georgia,serif;font-size:24px;font-weight:500}
+.panel-label{font-size:11px;letter-spacing:.15em;color:#a08971;font-weight:700;margin-bottom:8px}
+.editor-section{margin-bottom:18px}
+.editor-section label,.stack-form label{display:grid;gap:8px;color:#6d6458;font-weight:600;font-size:14px}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:34px;height:34px;border-radius:50%;border:2px solid #e7ddd0;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.swatch.selected{outline:3px solid rgba(127,151,127,.25);border-color:#6f8a72}
+.slot-grid,.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.slot-chip,.choice{border:1px solid var(--line);background:#fffdf9;border-radius:14px;padding:11px 12px;text-align:left;color:#6a5f54}
+.slot-chip.active,.choice.active{background:#eef4ea;border-color:#c9d5c5;color:#4c664f;font-weight:700}
+.shelf-details .stack-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.mini-books{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.mini-book{padding:0;border:0;background:transparent;height:54px}.mini-book img,.mini-book span{display:block;width:100%;height:100%;object-fit:cover;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.12)}.mini-book span{display:grid;place-items:center;color:#fff;font-weight:800}
+.panel-tip,.room-legend,.empty-inline{padding:12px 14px;border-radius:14px;background:#f6efe5;color:#857869;font-size:14px;line-height:1.5}
+.list-panel{padding:20px}.filters-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.filters-row.compact{padding:14px 18px}.filters-row label{display:grid;gap:6px;color:#776c60;font-size:13px}
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.book-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fffdf9;display:grid;gap:10px;align-content:start}
+.book-visual{padding:0;border:0;background:#f5eee4;border-radius:14px;height:250px;overflow:hidden}
+.book-visual img{width:100%;height:100%;object-fit:cover}.book-fallback{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:18px;color:#fff;text-align:center}.book-fallback strong{font-family:Georgia,serif;font-size:20px;line-height:1.2}.book-fallback small{margin-top:14px;opacity:.85}
+.book-card h3{margin:0;font-family:Georgia,serif;font-size:18px;font-weight:500}.muted{margin:0;color:var(--muted);font-size:13px}.progress{height:8px;border-radius:999px;background:#ece3d5;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,#7f977f,#a0b29d)}
+.book-meta,.place-line{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:#7f7568;margin:0}.place-line{display:block}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+.empty-state{padding:40px 20px;text-align:center;border:2px dashed #eadfce;border-radius:18px;background:#fffefb}.empty-state div{font-size:42px}.empty-state h3{font-family:Georgia,serif;font-size:24px;font-weight:500;margin:12px 0 8px}.empty-state p{margin:0 0 16px;color:var(--muted)}
+.journal-grid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:18px}.stack-form{display:grid;gap:14px}.split-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.textarea-input{min-height:100px;resize:vertical}
+.log-list{display:grid;gap:10px}.log-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:15px;padding:12px;background:#fffdf9}.log-date{background:#f2ebdf;border-radius:12px;padding:8px 6px;text-align:center}.log-date strong{display:block;font-size:18px}.log-date small{font-size:11px;color:#9a8d7b;text-transform:uppercase}.log-body strong{display:block}.log-body small{display:block;color:#988b7a;margin-top:5px}.log-pages{font-weight:700;color:#5f7a5d}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:16px 0}.stat-box small{display:block;color:#9a8d7a;margin-bottom:8px}.stat-box strong{font-family:Georgia,serif;font-size:34px;font-weight:500;color:#59644b}
+.charts-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}.charts-grid.secondary{margin-top:18px}
+.chart-card{padding:20px}.bar-chart{display:flex;align-items:flex-end;gap:6px;height:240px;padding-top:16px;border-bottom:1px solid #eadfce;overflow:hidden}.bar-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px;min-width:0}.bar{display:block;width:100%;max-width:24px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#a0b2a0,#6f8a72)}.bar.rose{background:linear-gradient(180deg,#d9acb4,#bd8c96)}.bar.sage{background:linear-gradient(180deg,#adc0ad,#7a957b)}.bar-col small{font-size:10px;color:#988b7a;white-space:nowrap}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekday{text-align:center;color:#ab9c8c;font-size:11px;font-weight:700;padding:4px 0}.day{min-height:46px;border-radius:12px;background:#f4eee5;padding:6px;display:flex;flex-direction:column;justify-content:space-between;font-size:12px;color:#827666}.day.blank{background:transparent}.day i{font-style:normal;font-size:10px;font-weight:700}.level-1{background:#e2ebde;color:#678164}.level-2{background:#c6d8bf;color:#567153}.level-3{background:#9fb99b;color:#fff}.level-4{background:#708f70;color:#fff}
+.genre-line{margin-bottom:12px}.genre-head{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#72685d;margin-bottom:5px}.genre-track{height:10px;background:#f0e8dd;border-radius:999px;overflow:hidden}.genre-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#d2a0aa,#b57f89)}
+.modal-scrim{position:fixed;inset:0;background:rgba(43,32,20,.42);display:grid;place-items:center;padding:18px;z-index:100}.modal{width:min(640px,100%);max-height:92vh;overflow:auto;background:#fffaf2;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 30px 70px rgba(0,0,0,.18)}
+.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}.modal-head h3{margin:0;font-family:Georgia,serif;font-size:28px;font-weight:500}.modal-actions,.helper-row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}.results-box{display:grid;gap:8px}.search-result{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:#fffdf9;border-radius:14px;padding:10px}.search-result img{width:40px;height:56px;object-fit:cover;border-radius:6px}.search-result strong{display:block}.search-result small{display:block;color:#948778;margin-top:4px}.result-fallback{width:40px;height:56px;display:grid;place-items:center;border-radius:6px;background:#f2ebdf}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120%);padding:12px 18px;border-radius:14px;background:#5f775f;color:#fff;box-shadow:var(--shadow);transition:.25s;z-index:120;text-align:center;max-width:90vw}#toast.show{transform:translateX(-50%) translateY(0)}
+.mobile-nav{display:none}
+@media (max-width:1200px){.rooms-layout{grid-template-columns:1fr}.editor-card{order:2}.journal-grid,.charts-grid,.charts-grid.secondary{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.app-shell{display:block}.sidebar{display:none}.topbar{padding:16px}.topbar-title{font-size:18px}#app-content{padding:18px}.page-head h2{font-size:30px}.journal-grid,.split-fields{grid-template-columns:1fr}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid{grid-template-columns:1fr 1fr}.room-scroll{padding:10px}.storybook-room{width:1280px;height:820px}.mobile-nav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:90;background:rgba(255,251,244,.96);border-top:1px solid var(--line);backdrop-filter:blur(12px);padding:10px max(8px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));justify-content:space-around}.mobile-nav button{border:0;background:transparent;display:grid;gap:4px;text-align:center;font-size:11px;color:#938676;min-width:64px}.mobile-nav button span{font-size:21px}.mobile-nav button.active{color:#607a60;font-weight:800}.footer{padding-bottom:92px}.book-visual{height:205px}.slot-grid,.choice-grid{grid-template-columns:1fr 1fr}.mini-books{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:520px){.book-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr}.slot-grid,.choice-grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.save-pill{font-size:12px}.room-toolbar select{min-width:160px}}
+
+/* V3 : nouveaux univers, zoom et interaction des tranches */
+.scene-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:8px 3px 14px;color:#897765;font-size:13px;flex-wrap:wrap}
+.scene-controls>div{display:flex;align-items:center;gap:9px}.scene-controls strong{font-size:12px;min-width:45px;text-align:center}
+.theme-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.theme-choice{display:flex;align-items:center;gap:8px;border:1px solid #e3d6c6;background:#fffaf3;color:#776658;border-radius:12px;padding:11px 9px;text-align:left;font-size:12px}
+.theme-choice span{font-size:19px}.theme-choice.active{border-color:#94ac91;background:#e9f0e6;color:#4f6954;font-weight:700}
+.theme-autumn{box-shadow:inset 0 0 0 5px #f8e9d2,inset 0 90px 145px #a66a5136}
+.theme-academia{box-shadow:inset 0 0 0 5px #d6c4b0,inset 0 100px 170px #2534468c}
+.theme-academia .bookshelf{filter:saturate(.73) brightness(.84)}
+.theme-fantasy{box-shadow:inset 0 0 0 5px #f1e4ef,inset 0 120px 200px #a28acc56}
+.theme-fantasy .window-frame{box-shadow:0 0 38px #d8c8ffaf}
+.theme-autumn .wallpaper-stars{background-image:radial-gradient(#eab0767d 2px,transparent 2px);background-size:46px 46px}
+.storybook-room .spine[data-book]{cursor:pointer;position:relative;z-index:10}
+.storybook-room .spine[data-book]:hover{transform:translateY(-6px);outline:2px solid #fff4d4}
+@media(max-width:520px){.theme-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.catalogue-search{padding:16px;border:1px solid #dccbbb;border-radius:16px;background:#f7efe3;display:grid;gap:10px}
+.catalogue-search p,.catalogue-search small{margin:0;color:#7e7164;line-height:1.45}
+.catalogue-row{display:flex;flex-wrap:wrap;gap:8px}
+.catalogue-row .text-input{flex:1;min-width:180px}
+.catalogue-row .btn{white-space:nowrap}
+.barcode-video{width:min(100%,440px);height:220px;object-fit:cover;border-radius:12px;display:block;margin:10px auto}
+
+
+/* V3 Cosy Patch — hiérarchie visuelle + bibliothèques plus mignonnes */
+.storybook-room{isolation:isolate;background:linear-gradient(180deg,#f7ebd8 0%, #f7ebd8 64%, rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room:after{z-index:0;bottom:0;height:270px;background:
+  radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.18), transparent 58%),
+  repeating-linear-gradient(90deg,rgba(117,75,42,.17) 0 3px, rgba(117,75,42,0) 3px 110px),
+  linear-gradient(180deg,#d8b38a 0%,#c49568 100%)}
+.wallpaper-stars{z-index:0;pointer-events:none;opacity:.24}
+.slot-object{z-index:3}
+.window-frame,.painting-frame{z-index:2}
+.shelf-area,.fireplace{z-index:3}
+.rug{z-index:1}
+.plant,.sofa,.chair,.coffee-table{z-index:4}
+.floor-lamp{z-index:5}
+.room-scroll{background:linear-gradient(180deg,#f4e9dc,#efe1d0);box-shadow:inset 0 2px 0 rgba(255,255,255,.7)}
+.storybook-room.wall-cream{background:linear-gradient(180deg,#f7ead8 0%,#f7ead8 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room.wall-rose{background:linear-gradient(180deg,#f3ddde 0%,#f3ddde 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room.wall-sage{background:linear-gradient(180deg,#deead8 0%,#deead8 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room.wall-blue{background:linear-gradient(180deg,#dfeaf4 0%,#dfeaf4 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room.wall-plum{background:linear-gradient(180deg,#eadff1 0%,#eadff1 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#d9b68b,#c59668)}
+.storybook-room.wall-dusk{background:linear-gradient(180deg,#838ba5 0%,#838ba5 64%,rgba(0,0,0,0) 64%), linear-gradient(180deg,#c89c73,#aa7a53)}
+
+/* bibliothèques */
+.shelf-area{width:220px;height:430px}
+.shelf-a{left:40px;top:214px}.shelf-b{left:286px;top:240px}.shelf-c{left:898px;top:240px}.shelf-d{left:1120px;top:214px}
+.bookshelf{position:absolute;inset:0;padding:16px 14px 18px;border-radius:28px 28px 18px 18px;display:grid;grid-template-rows:auto 1fr auto;overflow:visible;
+  box-shadow:0 18px 30px rgba(91,60,32,.18), inset 0 2px 0 rgba(255,255,255,.42), inset 0 -6px 0 rgba(118,84,53,.16);
+  border:4px solid rgba(255,248,240,.65)}
+.bookshelf:before{content:'';position:absolute;left:14px;right:14px;top:-14px;height:28px;border-radius:18px 18px 10px 10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.25));box-shadow:0 6px 10px rgba(99,70,48,.10)}
+.bookshelf:after{content:'';position:absolute;left:24px;right:24px;bottom:-10px;height:18px;border-radius:18px;background:rgba(120,86,55,.17);filter:blur(6px);z-index:-1}
+.bookshelf.variant-oak{background:linear-gradient(180deg,#ddb88f 0%,#c99663 100%)}
+.bookshelf.variant-sage{background:linear-gradient(180deg,#d7e0d0 0%,#b7c6b1 100%)}
+.bookshelf.variant-rose{background:linear-gradient(180deg,#ebcbd0 0%,#d7a6af 100%)}
+.bookshelf.variant-ivory{background:linear-gradient(180deg,#f2eadf 0%,#ddcfbc 100%)}
+.bookshelf-top,.bookshelf-base{position:relative;background:rgba(255,250,244,.70);border:1px solid rgba(144,104,73,.14);border-radius:999px;padding:7px 10px;text-align:center;
+  font-size:12px;font-weight:700;color:#6d5a49;backdrop-filter:blur(3px)}
+.shelf-rows{display:grid;gap:14px;padding:16px 2px 12px}
+.shelf-row{height:74px;align-items:flex-end;padding:8px 10px 10px;gap:4px;border-radius:14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,.14));
+  box-shadow:inset 0 -5px 0 rgba(125,87,55,.20), inset 0 1px 0 rgba(255,255,255,.5)}
+.shelf-row:nth-child(odd){background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.10))}
+.spine{width:12px;min-width:12px;border-radius:4px 4px 1px 1px;box-shadow:0 2px 4px rgba(0,0,0,.14);position:relative}
+.spine:nth-child(4n){height:57px}.spine:nth-child(3n){height:50px}.spine:nth-child(5n){height:60px}.spine.cover{width:14px;min-width:14px;border:1px solid rgba(255,255,255,.55)}
+.spine:before{content:'';position:absolute;left:2px;right:2px;top:5px;height:2px;border-radius:3px;background:rgba(255,255,255,.38)}
+.spine.ghost{background:rgba(255,255,255,.25)!important;border:1px dashed rgba(255,255,255,.25);box-shadow:none}
+.storybook-room .spine[data-book]:hover{transform:translateY(-7px) rotate(-1deg);outline:2px solid #fff8ea;box-shadow:0 7px 14px rgba(0,0,0,.18)}
+.empty-slot-label{border:2px dashed rgba(171,136,107,.35);background:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,.12));border-radius:26px;color:#927d69}
+
+/* plus cosy */
+.window-frame{background:#fcf6ec;border-color:#e1ceb0;box-shadow:0 14px 18px rgba(70,51,28,.10), inset 0 2px 0 rgba(255,255,255,.6)}
+.painting-frame{background:linear-gradient(180deg,#d8b57b,#b98852);border:3px solid rgba(255,247,232,.5)}
+.fireplace{box-shadow:0 18px 22px rgba(65,39,15,.10), inset 0 2px 0 rgba(255,255,255,.45)}
+.rug{left:330px;top:560px;width:715px;height:196px;box-shadow:0 18px 20px rgba(85,58,40,.09)}
+.rug.variant-floral{background:radial-gradient(circle at 50% 50%,#fff8f0 0 28%,#e7cabb 29% 44%,#fff1e6 45% 56%,#dca7b0 57% 63%,#fff6ef 64% 100%)}
+.rug.variant-oval{background:radial-gradient(circle at 50% 50%,#fff7ea 0 36%,#ecd3b5 37% 48%,#dbc2ae 49%)}
+.rug.variant-forest{background:radial-gradient(circle at 50% 50%,#f0f6ea 0 30%,#bfd3b6 31% 48%,#e8f0e3 49%)}
+.rug.variant-sun{background:radial-gradient(circle at 50% 50%,#fff4cd 0 22%,#f7dea4 23% 36%,#fff2df 37% 52%,#e3caa8 53%)}
+.sofa,.chair,.coffee-table,.fireplace,.plant .pot,.floor-lamp,.window-frame,.painting-frame{border:3px solid rgba(255,248,240,.35)}
+.sofa{box-shadow:0 16px 20px rgba(67,43,27,.10), inset 0 2px 0 rgba(255,255,255,.34)}
+.sofa-seat,.chair-seat{background:rgba(255,255,255,.22)}
+.chair{box-shadow:0 14px 18px rgba(67,43,27,.10), inset 0 2px 0 rgba(255,255,255,.35)}
+.coffee-table{box-shadow:0 12px 16px rgba(67,43,27,.10), inset 0 2px 0 rgba(255,255,255,.35)}
+.tea-set{box-shadow:0 0 0 4px rgba(255,255,255,.18),22px 0 0 #f7f2ea}
+.open-book{box-shadow:inset -1px 0 0 rgba(103,83,67,.18), 0 4px 10px rgba(0,0,0,.05)}
+.leaves span{filter:drop-shadow(0 4px 3px rgba(0,0,0,.08))}
+.theme-choice,.slot-chip,.choice,.btn,.mini-btn,.soft-btn,.nav-item,.book-card,.surface{transition:all .18s ease}
+.theme-choice:hover,.slot-chip:hover,.choice:hover,.btn:hover,.mini-btn:hover,.book-card:hover{transform:translateY(-1px)}
+
+</style>
+
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark">✦</div>
+        <div>
+          <h1>Ma Bibliothèque Enchantée</h1>
+          <p>Version 3 cosy — bibliothèques refaites</p>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <button class="nav-item active" data-view="rooms">🏡 Mes pièces</button>
+        <button class="nav-item" data-view="books">📚 Mes livres</button>
+        <button class="nav-item" data-view="journal">🖋️ Journal</button>
+        <button class="nav-item" data-view="stats">📊 Statistiques</button>
+      </nav>
+      <div class="side-card">
+        <strong>Nouveautés de la V3</strong>
+        <ul>
+          <li>4 univers décoratifs</li>
+          <li>zoom sur les grands salons</li>
+          <li>livres cliquables en rayon</li>
+          <li>décoration par emplacements fixes</li>
+        </ul>
+      </div>
+      <div class="sidebar-actions">
+        <button class="soft-btn" data-action="export">⇩ Sauvegarder</button>
+        <button class="soft-btn" data-action="import">⇧ Importer</button>
+        <input id="importFile" type="file" accept=".json,application/json" hidden>
+      </div>
+    </aside>
+    <div class="main-column">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">IL ÉTAIT UNE FOIS TON UNIVERS DE LECTURE</div>
+          <div class="topbar-title">Décore, range, lis, suis tes statistiques</div>
+        </div>
+        <div class="save-pill"><span></span> Sauvegarde locale automatique</div>
+      </header>
+      <main id="app-content"></main>
+      <footer class="footer">Fait pour les lecteurs qui veulent une bibliothèque aussi jolie que leurs romans ✿</footer>
+    </div>
+  </div>
+  <nav class="mobile-nav"></nav>
+  <div id="modalRoot"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+
+const STORE_KEY = 'ma_bibliotheque_enchantee_v3'; // Compatible avec les sauvegardes V3
+const OLD_KEYS = ['ma_bibliotheque_enchantee_v2','ma_bibliotheque_enchantee_v1'];
+const TODAY = () => new Date().toLocaleDateString('en-CA');
+const uid = () => 'id_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+const $ = (s, root = document) => root.querySelector(s);
+const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+const esc = (v='') => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const n = x => Math.max(0, Number(x) || 0);
+const fr = x => Math.round(x).toLocaleString('fr-FR');
+const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const weekdays = ['L','M','M','J','V','S','D'];
+const bookPalette = ['#8e6773','#6d8777','#567a82','#9b7c5a','#8c8a5b','#796d92','#b37e7f','#6b5b4c'];
+
+const walls = {
+  cream:['Crème conte','#f2e8d8'],
+  rose:['Rose poudré','#efd7d7'],
+  sage:['Vert sauge','#d8e5d6'],
+  blue:['Bleu doux','#dbe5ef'],
+  plum:['Prune claire','#e4d8e8'],
+  dusk:['Bleu du soir','#7e889f']
+};
+const floors = {
+  honey:['Miel','#c79f70'],
+  walnut:['Noyer','#8d6c52'],
+  ivory:['Ivoire','#d9c9b4']
+};
+
+const slotLabels = {
+  shelfA:'Bibliothèque gauche',
+  shelfB:'Bibliothèque centre-gauche',
+  shelfC:'Bibliothèque centre-droite',
+  shelfD:'Bibliothèque droite',
+  sofa:'Canapé',
+  chair:'Fauteuil',
+  rug:'Tapis',
+  coffee:'Table basse',
+  lamp:'Lampadaire',
+  plantA:'Plante gauche',
+  plantB:'Plante droite',
+  painting:'Tableau',
+  fireplace:'Cheminée',
+  window:'Fenêtre'
+};
+
+const slotOptions = {
+  shelfA:[['oak','Chêne'],['sage','Sauge'],['rose','Rosé'],['ivory','Ivoire'],['none','Vide']],
+  shelfB:[['oak','Chêne'],['sage','Sauge'],['rose','Rosé'],['ivory','Ivoire'],['none','Vide']],
+  shelfC:[['oak','Chêne'],['sage','Sauge'],['rose','Rosé'],['ivory','Ivoire'],['none','Vide']],
+  shelfD:[['oak','Chêne'],['sage','Sauge'],['rose','Rosé'],['ivory','Ivoire'],['none','Vide']],
+  sofa:[['rose','Velours rosé'],['sage','Sauge'],['gold','Miel'],['plum','Prune'],['none','Vide']],
+  chair:[['rose','Rosé'],['forest','Forêt'],['gold','Miel'],['cream','Crème'],['none','Vide']],
+  rug:[['floral','Fleuri'],['oval','Ovale'],['forest','Forêt'],['sun','Soleil'],['none','Vide']],
+  coffee:[['wood','Bois'],['cream','Crème'],['walnut','Noyer'],['none','Vide']],
+  lamp:[['gold','Doré'],['cream','Crème'],['forest','Forêt'],['none','Vide']],
+  plantA:[['fern','Fougère'],['flower','Fleuri'],['ivy','Lierre'],['none','Vide']],
+  plantB:[['fern','Fougère'],['flower','Fleuri'],['ivy','Lierre'],['none','Vide']],
+  painting:[['landscape','Paysage'],['flowers','Bouquet'],['night','Nuit'],['none','Vide']],
+  fireplace:[['stone','Pierre'],['cream','Crème'],['walnut','Noyer'],['none','Vide']],
+  window:[['spring','Printemps'],['autumn','Automne'],['night','Nuit'],['rain','Pluie'],['none','Vide']]
+};
+
+const shelfSlots = ['shelfA','shelfB','shelfC','shelfD'];
+const themes = {cottage:['🌷','Cottage enchanté','cream','honey'],autumn:['🍂','Automne doré','rose','walnut'],academia:['🕯️','Dark academia','dusk','walnut'],fantasy:['✨','Royaume fantasy','plum','ivory']};
+
+
+function defaultSlots(){
+  return {
+    shelfA:'oak', shelfB:'sage', shelfC:'rose', shelfD:'ivory',
+    sofa:'rose', chair:'forest', rug:'floral', coffee:'wood', lamp:'gold',
+    plantA:'fern', plantB:'flower', painting:'landscape', fireplace:'stone', window:'spring'
+  };
+}
+function createRoom(name='Le Grand Salon des Histoires'){
+  return {id:uid(), name, theme:'cottage', wall:'cream', floor:'honey', slots:defaultSlots()};
+}
+function defaultState(){
+  return {version:3, rooms:[createRoom()], books:[], logs:[]};
+}
+function migrate(raw){
+  if (!raw || !Array.isArray(raw.rooms) || !Array.isArray(raw.books) || !Array.isArray(raw.logs)) return null;
+  const rooms = raw.rooms.map((r,i)=>({
+    id:r.id || uid(),
+    name:r.name || `Salon ${i+1}`,
+    theme:r.theme in themes ? r.theme : 'cottage',
+    wall:r.wall in walls ? r.wall : 'cream',
+    floor:r.floor in floors ? r.floor : 'honey',
+    slots:{...defaultSlots(), ...(r.slots||{})}
+  }));
+  const books = raw.books.map(b=>({
+    id:b.id || uid(),
+    title:b.title || 'Livre sans titre',
+    author:b.author || '',
+    pages:n(b.pages)||300,
+    genre:b.genre || 'Autre',
+    format:b.format || 'Papier',
+    shelf:b.shelf || '',
+    cover:b.cover || '',
+    isbn:b.isbn || '',
+    finishedAt:b.finishedAt || '',
+    autoFinished:!!b.autoFinished,
+    createdAt:b.createdAt || TODAY()
+  }));
+  const logs = raw.logs.map(l=>({id:l.id||uid(), bookId:l.bookId, date:l.date||TODAY(), pages:n(l.pages), note:l.note||''}));
+  return {version:3, rooms:rooms.length?rooms:[createRoom()], books, logs};
+}
+function load(){
+  try {
+    const saved = localStorage.getItem(STORE_KEY);
+    if (saved) return migrate(JSON.parse(saved)) || defaultState();
+    for (const key of OLD_KEYS){
+      const old = localStorage.getItem(key);
+      if (old){
+        const migrated = migrate(JSON.parse(old));
+        if (migrated){
+          localStorage.setItem(STORE_KEY, JSON.stringify(migrated));
+          return migrated;
+        }
+      }
+    }
+  } catch(e){ console.warn(e); }
+  return defaultState();
+}
+
+let data = load();
+let ui = {
+  view:'rooms',
+  roomId:data.rooms[0].id,
+  slot:'shelfA',
+  bookSearch:'',
+  bookStatus:'all',
+  year:new Date().getFullYear(),
+  month:new Date().getMonth()+1,
+  modal:null, zoom:0.76
+};
+
+function save(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+  catch(e){ toast('Impossible de sauvegarder ici. Exporte tes données.'); }
+}
+function toast(message){
+  const el = $('#toast');
+  el.textContent = message;
+  el.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(()=>el.classList.remove('show'), 2600);
+}
+function activeRoom(){ return data.rooms.find(r=>r.id===ui.roomId) || data.rooms[0]; }
+function roomById(id){ return data.rooms.find(r=>r.id===id); }
+function bookById(id){ return data.books.find(b=>b.id===id); }
+function logsForBook(id){ return data.logs.filter(l=>l.bookId===id); }
+function readPages(bookId){ return logsForBook(bookId).reduce((sum,l)=>sum+n(l.pages),0); }
+function finished(book){ return !!book.finishedAt || (book.pages && readPages(book.id) >= n(book.pages)); }
+function bookStatusText(book){ return finished(book) ? 'Terminé' : readPages(book.id)>0 ? 'En cours' : 'À lire'; }
+function validUrl(v){ try{ const u = new URL(v); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch { return ''; } }
+function booksOnShelf(roomId, slot){ return data.books.filter(b=>b.shelf === `${roomId}:${slot}`); }
+function booksInRoom(roomId){ return data.books.filter(b=>b.shelf && b.shelf.startsWith(roomId+':')); }
+function shelfChoices(){
+  return data.rooms.flatMap(r => shelfSlots.map(s => ({value:`${r.id}:${s}`, label:`${r.name} — ${slotLabels[s]}`})));
+}
+function bookColor(seed){
+  const total = [...String(seed)].reduce((s,c)=>s+c.charCodeAt(0),0);
+  return bookPalette[total % bookPalette.length];
+}
+function niceDate(str){
+  if(!str) return '—';
+  const [y,m,d]=str.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function render(){
+  $$('.nav-item').forEach(btn => btn.classList.toggle('active', btn.dataset.view===ui.view));
+  renderMobileNav();
+  const main = $('#app-content');
+  main.innerHTML = ({rooms:renderRooms, books:renderBooks, journal:renderJournal, stats:renderStats}[ui.view])();
+}
+function renderMobileNav(){
+  const nav = $('.mobile-nav');
+  nav.innerHTML = [['rooms','🏡','Pièces'],['books','📚','Livres'],['journal','🖋️','Journal'],['stats','📊','Stats']]
+    .map(([id,icon,label])=>`<button class="${ui.view===id?'active':''}" data-view="${id}"><span>${icon}</span>${label}</button>`).join('');
+}
+function shellHead(title, subtitle, actions=''){
+  return `<section class="page-head"><div><div class="eyebrow">✧ IL ÉTAIT UNE FOIS…</div><h2>${title}</h2><p>${subtitle}</p></div><div class="head-actions">${actions}</div></section>`;
+}
+
+function renderRooms(){
+  const room = activeRoom();
+  return shellHead('Mes pièces enchantées','Décore de grands salons illustrés et range tes vrais livres directement dans les bibliothèques.', `<button class="btn btn-primary" data-action="add-room">＋ Nouvelle pièce</button><button class="btn" data-action="add-book">＋ Ajouter un livre</button>`) +
+    `<section class="rooms-layout">
+      <div class="room-card surface">
+        <div class="room-toolbar">
+          <div class="room-toolbar-left">
+            <select id="roomChooser">${data.rooms.map(r=>`<option value="${esc(r.id)}" ${r.id===room.id?'selected':''}>${esc(r.name)}</option>`).join('')}</select>
+            <button class="mini-btn" data-action="rename-room">✎</button>
+            <button class="mini-btn danger" data-action="delete-room" ${data.rooms.length===1?'disabled':''}>🗑</button>
+          </div>
+          <div class="room-toolbar-right">
+            <span class="badge soft">${fr(booksInRoom(room.id).length)} livres rangés</span>
+            <span class="badge">${shelfSlots.filter(s => room.slots[s] !== 'none').length} bibliothèques actives</span>
+          </div>
+        </div>
+        <div class="scene-controls"><span>✦ Vue panoramique interactive</span><div><button class="mini-btn" data-action="zoom-out" aria-label="Dézoomer">−</button><strong>${Math.round(ui.zoom*100)} %</strong><button class="mini-btn" data-action="zoom-in" aria-label="Zoomer">＋</button><button class="mini-btn" data-action="zoom-reset">↺</button></div></div>
+        <div class="room-scroll"><div class="storybook-room wall-${room.wall} floor-${room.floor} theme-${room.theme}" style="zoom:${ui.zoom}">${renderRoomScene(room)}</div></div>
+        <div class="room-legend">Astuce : touche un meuble pour le changer, ou la tranche d’un livre pour ouvrir sa fiche. Déplace la vue horizontalement sur mobile.</div>
+      </div>
+      <aside class="editor-card surface">${renderEditor(room)}</aside>
+    </section>`;
+}
+
+function renderRoomScene(room){
+  return `
+    <div class="wallpaper-stars"></div>
+    <div class="window-frame slot-object ${ui.slot==='window'?'selected':''}" data-slot="window">${room.slots.window==='none'?'':renderWindow(room.slots.window)}</div>
+    <div class="painting-frame slot-object ${ui.slot==='painting'?'selected':''}" data-slot="painting">${room.slots.painting==='none'?'':renderPainting(room.slots.painting)}</div>
+    <div class="fireplace slot-object ${ui.slot==='fireplace'?'selected':''} variant-${room.slots.fireplace}" data-slot="fireplace">${room.slots.fireplace==='none'?'':`<div class="fireplace-fire"></div><div class="mantel-books"></div>`}</div>
+    <div class="shelf-area shelf-a slot-object ${ui.slot==='shelfA'?'selected':''}" data-slot="shelfA">${renderShelf(room,'shelfA')}</div>
+    <div class="shelf-area shelf-b slot-object ${ui.slot==='shelfB'?'selected':''}" data-slot="shelfB">${renderShelf(room,'shelfB')}</div>
+    <div class="shelf-area shelf-c slot-object ${ui.slot==='shelfC'?'selected':''}" data-slot="shelfC">${renderShelf(room,'shelfC')}</div>
+    <div class="shelf-area shelf-d slot-object ${ui.slot==='shelfD'?'selected':''}" data-slot="shelfD">${renderShelf(room,'shelfD')}</div>
+    <div class="plant pot-a slot-object ${ui.slot==='plantA'?'selected':''} variant-${room.slots.plantA}" data-slot="plantA">${room.slots.plantA==='none'?'':renderPlant(room.slots.plantA)}</div>
+    <div class="plant pot-b slot-object ${ui.slot==='plantB'?'selected':''} variant-${room.slots.plantB}" data-slot="plantB">${room.slots.plantB==='none'?'':renderPlant(room.slots.plantB)}</div>
+    <div class="rug slot-object ${ui.slot==='rug'?'selected':''} variant-${room.slots.rug}" data-slot="rug"></div>
+    <div class="sofa slot-object ${ui.slot==='sofa'?'selected':''} variant-${room.slots.sofa}" data-slot="sofa">${room.slots.sofa==='none'?'':`<div class="sofa-seat"></div><div class="sofa-pillows"></div>`}</div>
+    <div class="chair slot-object ${ui.slot==='chair'?'selected':''} variant-${room.slots.chair}" data-slot="chair">${room.slots.chair==='none'?'':`<div class="chair-seat"></div>`}</div>
+    <div class="coffee-table slot-object ${ui.slot==='coffee'?'selected':''} variant-${room.slots.coffee}" data-slot="coffee">${room.slots.coffee==='none'?'':`<div class="tea-set"></div><div class="open-book"></div>`}</div>
+    <div class="floor-lamp slot-object ${ui.slot==='lamp'?'selected':''} variant-${room.slots.lamp}" data-slot="lamp">${room.slots.lamp==='none'?'':`<div class="lamp-shade"></div><div class="lamp-light"></div>`}</div>
+  `;
+}
+
+function renderWindow(variant){
+  return `<div class="window-view ${variant}"><div class="window-bars"></div>${variant==='night'?'<span class="moon"></span><span class="star a"></span><span class="star b"></span>':''}${variant==='autumn'?'<span class="leaf a"></span><span class="leaf b"></span>':''}${variant==='spring'?'<span class="hill"></span>':''}${variant==='rain'?'<span class="rain-lines"></span>':''}</div>`;
+}
+function renderPainting(variant){
+  const inner = {
+    landscape:'<div class="painting-art landscape"></div>',
+    flowers:'<div class="painting-art flowers"></div>',
+    night:'<div class="painting-art night"></div>',
+    none:''
+  };
+  return `<div class="painting-inner">${inner[variant]||inner.landscape}</div>`;
+}
+function renderPlant(variant){
+  if (variant === 'none') return '';
+  const stems = variant === 'flower' ? 5 : 8;
+  return `<div class="pot"></div><div class="leaves ${variant}">${Array.from({length:stems}, (_,i)=>`<span style="--i:${i}"></span>`).join('')}</div>`;
+}
+function renderShelf(room, slot){
+  const style = room.slots[slot];
+  if (style === 'none') return `<div class="empty-slot-label">Bibliothèque vide</div>`;
+  const books = booksOnShelf(room.id, slot);
+  return `<div class="bookshelf variant-${style}">
+    <div class="bookshelf-top">${slotLabels[slot]}</div>
+    <div class="shelf-rows">${[0,1,2,3].map(row => `<div class="shelf-row">${books.slice(row*12, row*12+12).map(renderSpine).join('')}${Array.from({length:Math.max(0,12 - books.slice(row*12, row*12+12).length)}).map(()=>'<span class="spine ghost"></span>').join('')}</div>`).join('')}</div>
+    <div class="bookshelf-base">${books.length} livre(s)</div>
+  </div>`;
+}
+function renderSpine(book){
+  const title = esc(book.title);
+  if (book.cover){
+    return `<span class="spine cover" data-book="${esc(book.id)}" title="${title}" style="background-image:url('${esc(book.cover)}')"></span>`;
+  }
+  return `<span class="spine" data-book="${esc(book.id)}" title="${title}" style="background:${bookColor(book.title)}"><i>${esc((book.title||'?').slice(0,1).toUpperCase())}</i></span>`;
+}
+
+function renderEditor(room){
+  const slot = ui.slot;
+  const options = slotOptions[slot] || [];
+  const isShelf = shelfSlots.includes(slot);
+  const shelfBooks = isShelf ? booksOnShelf(room.id, slot) : [];
+  return `
+    <div class="panel-label">ATELIER DE DÉCORATION</div>
+    <h3>Personnaliser la pièce</h3>
+    <div class="editor-section">
+      <label>Univers décoratif</label>
+      <div class="theme-choices">${Object.entries(themes).map(([key,[emoji,label]])=>`<button class="theme-choice ${room.theme===key?'active':''}" data-theme="${key}"><span>${emoji}</span>${label}</button>`).join('')}</div>
+    </div>
+    <div class="editor-section">
+      <label>Murs</label>
+      <div class="swatches">${Object.entries(walls).map(([key,[name,color]])=>`<button class="swatch ${room.wall===key?'selected':''}" data-wall="${key}" title="${name}" style="background:${color}"></button>`).join('')}</div>
+    </div>
+    <div class="editor-section">
+      <label>Parquet</label>
+      <div class="swatches">${Object.entries(floors).map(([key,[name,color]])=>`<button class="swatch ${room.floor===key?'selected':''}" data-floor="${key}" title="${name}" style="background:${color}"></button>`).join('')}</div>
+    </div>
+    <div class="editor-section">
+      <label>Emplacements fixes</label>
+      <div class="slot-grid">${Object.entries(slotLabels).map(([key,label])=>`<button class="slot-chip ${ui.slot===key?'active':''}" data-slot-button="${key}">${esc(label)}</button>`).join('')}</div>
+    </div>
+    <div class="editor-section">
+      <label>${esc(slotLabels[slot])}</label>
+      <div class="choice-grid">${options.map(([val,label])=>`<button class="choice ${room.slots[slot]===val?'active':''}" data-furniture="${val}">${esc(label)}</button>`).join('')}</div>
+    </div>
+    ${isShelf ? `
+      <div class="editor-section shelf-details">
+        <div class="stack-head"><strong>${shelfBooks.length} livre(s)</strong><button class="btn btn-small" data-action="add-book">＋ Ranger un livre</button></div>
+        <div class="mini-books">${shelfBooks.length ? shelfBooks.slice(0,18).map(b=>`<button class="mini-book" data-book="${esc(b.id)}">${b.cover?`<img src="${esc(b.cover)}" alt="">`:`<span style="background:${bookColor(b.title)}">${esc(b.title.slice(0,1).toUpperCase())}</span>`}</button>`).join('') : '<div class="empty-inline">Ajoute un livre et choisis cette bibliothèque pour le voir apparaître ici.</div>'}</div>
+      </div>
+    ` : `<div class="panel-tip">Chaque objet a une place définie dans la pièce : tu choisis uniquement son style, sa couleur ou sa présence.</div>`}
+  `;
+}
+
+function renderBooks(){
+  const q = ui.bookSearch.trim().toLowerCase();
+  let list = data.books.filter(b => (`${b.title} ${b.author} ${b.genre}`).toLowerCase().includes(q));
+  if (ui.bookStatus==='finished') list = list.filter(finished);
+  if (ui.bookStatus==='reading') list = list.filter(b => !finished(b) && readPages(b.id)>0);
+  if (ui.bookStatus==='unread') list = list.filter(b => readPages(b.id)===0);
+  return shellHead('Ma collection','Tous tes vrais livres, avec leur rangement, leur progression et leur emplacement dans tes pièces.', `<button class="btn btn-primary" data-action="add-book">＋ Ajouter un livre</button>`) +
+    `<section class="surface list-panel">
+      <div class="filters-row">
+        <input id="bookFilter" class="text-input" placeholder="Chercher un titre, un auteur ou un genre" value="${esc(ui.bookSearch)}">
+        <select id="statusFilter" class="select-input">
+          <option value="all" ${ui.bookStatus==='all'?'selected':''}>Tous</option>
+          <option value="reading" ${ui.bookStatus==='reading'?'selected':''}>En cours</option>
+          <option value="finished" ${ui.bookStatus==='finished'?'selected':''}>Terminés</option>
+          <option value="unread" ${ui.bookStatus==='unread'?'selected':''}>À lire</option>
+        </select>
+        <span class="badge">${data.books.length} livres</span>
+      </div>
+      ${!list.length ? `<div class="empty-state"><div>📚</div><h3>Ta collection attend ses histoires…</h3><p>Ajoute ton premier livre ou change tes filtres.</p><button class="btn btn-primary" data-action="add-book">Ajouter un livre</button></div>` : `<div class="book-grid">${list.map(renderBookCard).join('')}</div>`}
+    </section>`;
+}
+function renderBookCard(book){
+  const pagesRead = readPages(book.id);
+  const total = Math.max(1, n(book.pages));
+  const pct = Math.min(100, Math.round(pagesRead / total * 100));
+  const place = book.shelf ? shelfPlaceLabel(book.shelf) : 'Pas encore rangé';
+  return `<article class="book-card">
+    <button class="book-visual" data-book="${esc(book.id)}">
+      ${book.cover ? `<img src="${esc(book.cover)}" alt="">` : `<div class="book-fallback" style="background:${bookColor(book.title)}"><strong>${esc(book.title)}</strong><small>${esc(book.author||'')}</small></div>`}
+    </button>
+    <span class="badge soft">${esc(bookStatusText(book))}</span>
+    <h3>${esc(book.title)}</h3>
+    <p class="muted">${esc(book.author || 'Auteur inconnu')}</p>
+    <div class="progress"><span style="width:${pct}%"></span></div>
+    <div class="book-meta"><span>${fr(pagesRead)} / ${fr(book.pages)} pages</span><span>${pct}%</span></div>
+    <p class="place-line">🏡 ${esc(place)}</p>
+    <div class="card-actions"><button class="btn btn-small" data-action="log-book" data-id="${esc(book.id)}">＋ Pages</button><button class="btn btn-small" data-action="edit-book" data-id="${esc(book.id)}">Modifier</button></div>
+  </article>`;
+}
+function shelfPlaceLabel(shelfValue){
+  const [roomId, slot] = String(shelfValue).split(':');
+  const room = roomById(roomId);
+  return room ? `${room.name} — ${slotLabels[slot] || slot}` : 'Bibliothèque inconnue';
+}
+
+function renderJournal(){
+  const sorted = [...data.logs].sort((a,b)=>b.date.localeCompare(a.date));
+  return shellHead('Journal de lecture','Enregistre chaque jour les pages que tu lis et garde une trace de toutes tes sessions.', `<button class="btn btn-primary" data-action="new-log">＋ Nouvelle session</button>`) +
+    `<section class="journal-grid">
+      <div class="surface form-panel">
+        <h3>Ajouter une session</h3>
+        <form id="quickLogForm" class="stack-form">
+          <label>Livre<select name="bookId" class="select-input">${data.books.map(b=>`<option value="${esc(b.id)}">${esc(b.title)}</option>`).join('')}</select></label>
+          <div class="split-fields">
+            <label>Date<input type="date" name="date" class="text-input" value="${TODAY()}" max="${TODAY()}"></label>
+            <label>Pages lues<input type="number" name="pages" class="text-input" min="1" max="30000" placeholder="65"></label>
+          </div>
+          <label>Note<textarea name="note" class="textarea-input" rows="3" placeholder="Un chapitre marquant, une citation, une émotion..."></textarea></label>
+          <button class="btn btn-primary" type="submit">Enregistrer</button>
+        </form>
+      </div>
+      <div class="surface list-panel">
+        <div class="list-title">Dernières sessions</div>
+        ${sorted.length ? `<div class="log-list">${sorted.slice(0,50).map(renderLogRow).join('')}</div>` : `<div class="empty-inline">Aucune session pour le moment.</div>`}
+      </div>
+    </section>`;
+}
+function renderLogRow(log){
+  const book = bookById(log.bookId);
+  return `<div class="log-row"><div class="log-date"><strong>${log.date.slice(8)}</strong><small>${months[Number(log.date.slice(5,7))-1].slice(0,3)}</small></div><div class="log-body"><strong>${esc(book?.title || 'Livre supprimé')}</strong><small>${esc(log.note || 'Aucune note')}</small></div><div class="log-pages">${fr(log.pages)} p.</div><button class="mini-btn danger" data-action="delete-log" data-id="${esc(log.id)}">✕</button></div>`;
+}
+
+function renderStats(){
+  const year = ui.year;
+  const month = ui.month;
+  const logsYear = data.logs.filter(l => l.date.startsWith(String(year)));
+  const logsMonth = logsYear.filter(l => Number(l.date.slice(5,7)) === month);
+  const pagesYear = logsYear.reduce((s,l)=>s+n(l.pages),0);
+  const pagesMonth = logsMonth.reduce((s,l)=>s+n(l.pages),0);
+  const booksFinishedYear = data.books.filter(b => b.finishedAt && b.finishedAt.startsWith(String(year))).length;
+  const booksFinishedMonth = data.books.filter(b => b.finishedAt && b.finishedAt.startsWith(`${year}-${String(month).padStart(2,'0')}`)).length;
+  const daily = Array.from({length:new Date(year, month, 0).getDate()}, (_,i)=> {
+    const day = String(i+1).padStart(2,'0');
+    const date = `${year}-${String(month).padStart(2,'0')}-${day}`;
+    return {label:i+1, value:data.logs.filter(l=>l.date===date).reduce((s,l)=>s+n(l.pages),0)};
+  });
+  const monthly = Array.from({length:12}, (_,i)=> ({label:months[i].slice(0,3), value:logsYear.filter(l=>Number(l.date.slice(5,7))===i+1).reduce((s,l)=>s+n(l.pages),0)}));
+  const genres = {};
+  data.books.forEach(b => { genres[b.genre || 'Autre'] = (genres[b.genre||'Autre'] || 0) + readPages(b.id); });
+  const genreRows = Object.entries(genres).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  return shellHead('Statistiques de lecture','Observe ton rythme de lecture par jour, mois et année.', '') +
+    `<section class="filters-row surface compact">
+      <label>Année<select id="yearPick" class="select-input">${yearsList().map(y=>`<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('')}</select></label>
+      <label>Mois<select id="monthPick" class="select-input">${months.map((m,i)=>`<option value="${i+1}" ${i+1===month?'selected':''}>${m}</option>`).join('')}</select></label>
+    </section>
+    <section class="stats-grid">
+      <article class="surface stat-box"><small>Pages ce mois-ci</small><strong>${fr(pagesMonth)}</strong></article>
+      <article class="surface stat-box"><small>Pages cette année</small><strong>${fr(pagesYear)}</strong></article>
+      <article class="surface stat-box"><small>Livres terminés ce mois-ci</small><strong>${fr(booksFinishedMonth)}</strong></article>
+      <article class="surface stat-box"><small>Livres terminés cette année</small><strong>${fr(booksFinishedYear)}</strong></article>
+    </section>
+    <section class="charts-grid">
+      <article class="surface chart-card"><div class="chart-title">Pages par jour — ${months[month-1]} ${year}</div>${barChart(daily,'rose')}</article>
+      <article class="surface chart-card"><div class="chart-title">Pages par mois — ${year}</div>${barChart(monthly,'sage')}</article>
+    </section>
+    <section class="charts-grid secondary">
+      <article class="surface chart-card"><div class="chart-title">Calendrier de lecture</div>${renderCalendar(year, month)}</article>
+      <article class="surface chart-card"><div class="chart-title">Genres les plus lus</div>${genreRows.length ? genreRows.map(([genre,value])=>genreLine(genre,value,Math.max(...genreRows.map(r=>r[1])))).join('') : '<div class="empty-inline">Pas encore assez de données.</div>'}</article>
+    </section>`;
+}
+function yearsList(){
+  const ys = new Set([new Date().getFullYear()]);
+  data.logs.forEach(l=>ys.add(Number(l.date.slice(0,4))));
+  data.books.forEach(b=>{ if (b.finishedAt) ys.add(Number(b.finishedAt.slice(0,4))); });
+  return [...ys].sort((a,b)=>b-a);
+}
+function barChart(rows, tone){
+  const max = Math.max(1, ...rows.map(r=>r.value));
+  return `<div class="bar-chart">${rows.map(r=>`<div class="bar-col" title="${esc(String(r.label))} : ${fr(r.value)} pages"><span class="bar ${tone}" style="height:${Math.max(2, (r.value/max)*100)}%"></span><small>${esc(String(r.label))}</small></div>`).join('')}</div>`;
+}
+function renderCalendar(year, month){
+  const firstDay = new Date(year, month-1, 1);
+  const start = (firstDay.getDay()+6)%7;
+  const count = new Date(year, month, 0).getDate();
+  const rows = [];
+  for(let i=0;i<start;i++) rows.push('<div class="day blank"></div>');
+  const vals = Array.from({length:count}, (_,i)=>{
+    const date = `${year}-${String(month).padStart(2,'0')}-${String(i+1).padStart(2,'0')}`;
+    return data.logs.filter(l=>l.date===date).reduce((s,l)=>s+n(l.pages),0);
+  });
+  const max = Math.max(1, ...vals);
+  vals.forEach((value,i)=>{
+    let level = value===0 ? 0 : value < max*.25 ? 1 : value < max*.5 ? 2 : value < max*.75 ? 3 : 4;
+    rows.push(`<div class="day level-${level}" title="${i+1} : ${fr(value)} pages"><span>${i+1}</span>${value?`<i>${fr(value)}</i>`:''}</div>`);
+  });
+  return `<div class="calendar">${weekdays.map(d=>`<div class="weekday">${d}</div>`).join('')}${rows.join('')}</div>`;
+}
+function genreLine(name, value, max){
+  return `<div class="genre-line"><div class="genre-head"><span>${esc(name)}</span><span>${fr(value)} p.</span></div><div class="genre-track"><span style="width:${Math.max(7,(value/max)*100)}%"></span></div></div>`;
+}
+
+function openModal(content){ ui.modal = true; $('#modalRoot').innerHTML = `<div class="modal-scrim"><div class="modal">${content}</div></div>`; }
+function closeModal(){ stopCamera(); ui.modal = false; $('#modalRoot').innerHTML = ''; }
+function bookModal(id=''){
+  const book = id ? bookById(id) : null;
+  const choices = shelfChoices();
+  openModal(`
+    <div class="modal-head"><h3>${book?'Modifier le livre':'Ajouter un livre'}</h3><button class="mini-btn" data-action="close-modal">✕</button></div>
+    <form id="bookForm" data-edit="${book?esc(book.id):''}" class="stack-form">
+      <label>Titre *<input class="text-input" id="bookTitle" name="title" value="${esc(book?.title||'')}" required></label>
+      <label>Auteur<input class="text-input" id="bookAuthor" name="author" value="${esc(book?.author||'')}"></label>
+      <div class="split-fields">
+        <label>Pages *<input class="text-input" id="bookPages" type="number" min="1" max="30000" name="pages" value="${book?esc(book.pages):''}" required></label>
+        <label>Genre<select name="genre" class="select-input">${['Dark romance','Romance','Romantasy','Fantasy','Thriller','Classique','Young Adult','Autre'].map(g=>`<option value="${esc(g)}" ${(book?.genre||'Autre')===g?'selected':''}>${esc(g)}</option>`).join('')}</select></label>
+      </div>
+      <div class="split-fields">
+        <label>Format<select name="format" class="select-input">${['Papier','Kindle','Audio'].map(f=>`<option value="${f}" ${(book?.format||'Papier')===f?'selected':''}>${f}</option>`).join('')}</select></label>
+        <label>Bibliothèque<select name="shelf" class="select-input"><option value="">Pas rangé pour l'instant</option>${choices.map(c=>`<option value="${esc(c.value)}" ${book?.shelf===c.value?'selected':''}>${esc(c.label)}</option>`).join('')}</select></label>
+      </div>
+      <label>ISBN<input class="text-input" id="bookIsbn" name="isbn" inputmode="numeric" value="${esc(book?.isbn||'')}" placeholder="978…"></label>
+      <label>Couverture (URL)<input class="text-input" id="bookCover" name="cover" type="url" placeholder="https://..." value="${esc(book?.cover||'')}"></label>
+      <section class="catalogue-search">
+        <strong>🔎 Catalogue de livres</strong>
+        <p>Recherche par titre, auteur ou ISBN (10 ou 13 chiffres). Sélectionne l’édition correspondant à ton livre.</p>
+        <div class="catalogue-row">
+          <input id="catalogQuery" class="text-input" aria-label="Titre, auteur ou ISBN" placeholder="Titre, auteur ou ISBN…" value="${esc(book?.isbn||book?.title||'')}">
+          <button type="button" class="btn btn-primary" data-action="search-openlibrary">Rechercher</button>
+        </div>
+        <div class="catalogue-row">
+          <button type="button" class="btn" data-action="scan-camera">📷 Scanner ISBN</button>
+          <button type="button" class="btn" data-action="scan-photo">🖼️ Photo du code-barres</button>
+          <input type="file" id="barcodePhoto" accept="image/*" capture="environment" hidden>
+        </div>
+        <small>Le scan reconnaît un code-barres ISBN sur les appareils compatibles. Une simple photo de couverture sans code-barres ne permet pas encore d’identifier le livre.</small>
+        <div id="scanView"></div>
+      </section>
+      <div id="bookMatches" class="results-box"></div>
+      <label>Date de fin (facultative)<input class="text-input" type="date" name="finishedAt" value="${esc(book?.finishedAt||'')}" max="${TODAY()}"></label>
+      <div class="modal-actions"><button class="btn" type="button" data-action="close-modal">Annuler</button>${book?`<button class="btn danger" type="button" data-action="delete-book" data-id="${esc(book.id)}">Supprimer</button>`:''}<button class="btn btn-primary" type="submit">${book?'Enregistrer':'Ajouter'}</button></div>
+    </form>`);
+}
+function logModal(id=''){
+  const preferred = id ? id : data.books[0]?.id || '';
+  openModal(`
+    <div class="modal-head"><h3>Nouvelle session de lecture</h3><button class="mini-btn" data-action="close-modal">✕</button></div>
+    <form id="logForm" class="stack-form">
+      <label>Livre<select name="bookId" class="select-input">${data.books.map(b=>`<option value="${esc(b.id)}" ${b.id===preferred?'selected':''}>${esc(b.title)}</option>`).join('')}</select></label>
+      <div class="split-fields"><label>Date<input class="text-input" type="date" name="date" value="${TODAY()}" max="${TODAY()}"></label><label>Pages lues<input class="text-input" type="number" name="pages" min="1" max="30000" placeholder="65"></label></div>
+      <label>Note<textarea class="textarea-input" name="note" rows="3"></textarea></label>
+      <div class="modal-actions"><button class="btn" type="button" data-action="close-modal">Annuler</button><button class="btn btn-primary" type="submit">Enregistrer</button></div>
+    </form>`);
+}
+
+function exportData(){
+  const payload = {...data, exportedAt:new Date().toISOString(), app:'Ma Bibliothèque Enchantée V3'};
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = `ma-bibliotheque-enchantee-v3-${TODAY()}.json`; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+  toast('Sauvegarde exportée.');
+}
+
+function normIsbn(q){return q.replace(/[\s-]/g,'').toUpperCase();}
+function isIsbn(q){return /^(?:\d{13}|\d{9}[\dX])$/.test(normIsbn(q));}
+async function fetchJSON(url){
+  const c=new AbortController();
+  const timer=setTimeout(()=>c.abort(),12000);
+  try {
+    const response=await fetch(url,{signal:c.signal});
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } finally {clearTimeout(timer);}
+}
+function mapOL(d){
+  return {title:d.title||'',author:(d.author_name||[]).slice(0,3).join(', '),
+  pages:d.number_of_pages_median||0,cover:d.cover_i?`https://covers.openlibrary.org/b/id/${d.cover_i}-L.jpg`:'',
+  isbn:d.isbn?.[0]||'',source:'Open Library'};
+}
+function mapGoogle(d){
+  const b=d.volumeInfo||{};
+  return {title:b.title||'',author:(b.authors||[]).join(', '),pages:b.pageCount||0,
+  cover:(b.imageLinks?.thumbnail||b.imageLinks?.smallThumbnail||'').replace(/^http:/,'https:'),
+  isbn:(b.industryIdentifiers||[]).find(x=>x.type==='ISBN_13')?.identifier||(b.industryIdentifiers||[])[0]?.identifier||'',
+  source:'Google Books'};
+}
+async function searchBooksOnline(queryOverride){
+  const q=String(queryOverride||$('#catalogQuery')?.value||$('#bookTitle')?.value||'').trim();
+  const container=$('#bookMatches');
+  if(!q||!container) return toast('Saisis un titre ou un ISBN.');
+  container.innerHTML='<div class="empty-inline">Recherche dans Open Library et Google Books…</div>';
+  const isbn=isIsbn(q);
+  const terms=isbn?{isbn:normIsbn(q)}:{q,limit:15};
+  const openURL='https://openlibrary.org/search.json?'+new URLSearchParams({...terms,fields:'title,author_name,number_of_pages_median,cover_i,isbn',limit:'15'});
+  const googleURL='https://www.googleapis.com/books/v1/volumes?'+new URLSearchParams({q:isbn?'isbn:'+normIsbn(q):q,maxResults:'15',printType:'books'});
+  const results=await Promise.allSettled([fetchJSON(openURL),fetchJSON(googleURL)]);
+  if(!$('#bookMatches')) return;
+  const first=results[0].status==='fulfilled'?(results[0].value.docs||[]).map(mapOL):[];
+  const second=results[1].status==='fulfilled'?(results[1].value.items||[]).map(mapGoogle):[];
+  const seen=new Set();
+  const books=[...first,...second].filter(b=>{
+    if(!b.title)return false;
+    const key=(b.isbn||b.title+'-'+b.author).toLowerCase();
+    if(seen.has(key))return false; seen.add(key);return true;
+  });
+  container._results=books;
+  if(!books.length){
+    const serviceError=results.every(x=>x.status==='rejected');
+    container.innerHTML=`<div class="empty-inline">${serviceError?'Connexion aux catalogues impossible. Vérifie ta connexion Internet.':'Aucun résultat. Essaie un autre titre ou complète le formulaire à la main.'}</div>`;
+    return;
+  }
+  container.innerHTML=books.map((b,i)=>`<button type="button" class="search-result" data-result="${i}">${b.cover?`<img src="${esc(b.cover)}" alt="">`:'<span class="result-fallback">📖</span>'}<span><strong>${esc(b.title)}</strong><small>${esc(b.author||'Auteur inconnu')} · ${b.pages?fr(b.pages)+' pages · ':''}${esc(b.isbn||'ISBN non disponible')} · ${esc(b.source)}</small></span></button>`).join('');
+}
+let cameraStream=null;
+let scanTimer=null;
+function stopCamera(){
+  if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+}
+async function detectISBN(image){
+  if(!('BarcodeDetector' in window))throw Error('Non compatible : utilise la recherche par ISBN.');
+  const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+  const found=await detector.detect(image);
+  return found.map(b=>normIsbn(b.rawValue)).find(isIsbn)||'';
+}
+async function scanCamera(){
+  if(!navigator.mediaDevices?.getUserMedia || !('BarcodeDetector' in window)){
+    toast('Scan indisponible sur cet appareil. Tu peux entrer l’ISBN manuellement.');
+    return;
+  }
+  stopCamera();
+  const box=$('#scanView');
+  try {
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
+    if(!$('#scanView')){stopCamera();return;}
+    box.innerHTML='<video autoplay playsinline muted id="scanVideo" class="barcode-video"></video><button type="button" class="btn" data-action="stop-camera">Arrêter la caméra</button>';
+    const video=$('#scanVideo');video.srcObject=cameraStream;await video.play();
+    scanTimer=setInterval(async ()=>{
+      if(!cameraStream||!video||video.readyState<2)return;
+      try{
+        const isbn=await detectISBN(video);
+        if(isbn){stopCamera();if($('#catalogQuery'))$('#catalogQuery').value=isbn;if($('#bookIsbn'))$('#bookIsbn').value=isbn;$('#scanView').innerHTML='ISBN détecté : '+esc(isbn);searchBooksOnline(isbn);}
+      }catch{}
+    },650);
+  } catch(e){stopCamera();if($('#scanView'))$('#scanView').innerHTML='<div class="empty-inline">Caméra inaccessible. Vérifie les autorisations et utilise HTTPS, ou saisis l’ISBN.</div>';}
+}
+async function scanPhoto(file){
+  if(!file)return;
+  try{
+    const bitmap=await createImageBitmap(file);
+    const isbn=await detectISBN(bitmap);
+    bitmap.close();
+    if(!isbn)return toast('Aucun code-barres ISBN détecté dans cette image.');
+    $('#catalogQuery').value=isbn;
+    $('#bookIsbn').value=isbn;
+    searchBooksOnline(isbn);
+  }catch(e){toast('Scan de photo indisponible. Saisis le numéro ISBN.');}
+}
+
+function saveBookFromForm(form){
+  const f = new FormData(form);
+  const title = String(f.get('title')||'').trim();
+  const pages = Number(f.get('pages'));
+  if (!title || !Number.isInteger(pages) || pages < 1 || pages > 30000) return toast('Vérifie le titre et le nombre de pages.');
+  const id = form.dataset.edit;
+  const existing = id ? bookById(id) : null;
+  const payload = {
+    id: existing?.id || uid(),
+    title:title.slice(0,160),
+    author:String(f.get('author')||'').trim().slice(0,120),
+    pages,
+    genre:String(f.get('genre')||'Autre'),
+    format:String(f.get('format')||'Papier'),
+    shelf:String(f.get('shelf')||''),
+    cover:validUrl(String(f.get('cover')||'')),
+    isbn:String(f.get('isbn')||'').replace(/[^0-9Xx]/g,'').slice(0,13),
+    finishedAt:String(f.get('finishedAt')||''),
+    autoFinished:!!existing?.autoFinished,
+    createdAt:existing?.createdAt || TODAY()
+  };
+  if (existing) Object.assign(existing, payload); else data.books.push(payload);
+  closeModal(); save(); render(); toast(existing?'Livre mis à jour.':'Livre ajouté à ta bibliothèque.');
+}
+function saveLogPayload(payload){
+  const book = bookById(payload.bookId);
+  if (!book) return toast('Choisis un livre.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(payload.date) || payload.date > TODAY()) return toast('Choisis une date valide.');
+  const pages = Number(payload.pages);
+  if (!Number.isInteger(pages) || pages < 1 || pages > 30000) return toast('Nombre de pages invalide.');
+  data.logs.push({id:uid(), bookId:payload.bookId, date:payload.date, pages, note:String(payload.note||'').trim().slice(0,300)});
+  if (!book.finishedAt && readPages(book.id) >= n(book.pages)){ book.finishedAt = payload.date; book.autoFinished = true; }
+  save(); render(); toast(`${pages} pages ajoutées.`);
+}
+function saveLogFromForm(form){
+  const f = new FormData(form);
+  saveLogPayload({bookId:String(f.get('bookId')||''), date:String(f.get('date')||''), pages:Number(f.get('pages')), note:String(f.get('note')||'')});
+  if (ui.modal) closeModal();
+}
+
+function changeSlotValue(slot, value){
+  const room = activeRoom();
+  if (!room) return;
+  if (value==='none' && shelfSlots.includes(slot)){
+    const attached = booksOnShelf(room.id, slot);
+    if (attached.length && !confirm(`Cette bibliothèque contient ${attached.length} livre(s). Les livres resteront dans ta collection, mais ne seront plus rangés ici. Continuer ?`)) return;
+    attached.forEach(b => b.shelf = '');
+  }
+  room.slots[slot] = value;
+  save(); render();
+}
+
+function handleAction(action, button){
+  const room = activeRoom();
+  const id = button?.dataset.id;
+  if (action === 'zoom-in'){ui.zoom=Math.min(1.25,Math.round((ui.zoom+.1)*100)/100);render();return;}
+  if (action === 'zoom-out'){ui.zoom=Math.max(.4,Math.round((ui.zoom-.1)*100)/100);render();return;}
+  if (action === 'zoom-reset'){ui.zoom=.76;render();return;}
+  if (action === 'add-room'){
+    const name = prompt('Nom de la nouvelle pièce', `Salon ${data.rooms.length+1}`);
+    if (!name || !name.trim()) return;
+    const r = createRoom(name.trim().slice(0,80));
+    data.rooms.push(r); ui.roomId = r.id; ui.slot = 'shelfA'; save(); render(); toast('Nouvelle pièce créée.'); return;
+  }
+  if (action === 'rename-room'){
+    const name = prompt('Nouveau nom', room.name);
+    if (name && name.trim()){ room.name = name.trim().slice(0,80); save(); render(); }
+    return;
+  }
+  if (action === 'delete-room'){
+    if (data.rooms.length===1) return toast('Conserve au moins une pièce.');
+    if (!confirm(`Supprimer « ${room.name} » ? Les livres resteront dans la collection.`)) return;
+    data.books.forEach(b=>{ if (b.shelf && b.shelf.startsWith(room.id+':')) b.shelf=''; });
+    data.rooms = data.rooms.filter(r=>r.id!==room.id);
+    ui.roomId = data.rooms[0].id; ui.slot='shelfA'; save(); render(); toast('Pièce supprimée.'); return;
+  }
+  if (action === 'add-book'){ bookModal(); return; }
+  if (action === 'edit-book'){ bookModal(id); return; }
+  if (action === 'log-book'){ logModal(id); return; }
+  if (action === 'new-log'){ if (!data.books.length) return toast('Ajoute d’abord un livre.'); logModal(); return; }
+  if (action === 'close-modal'){ closeModal(); return; }
+  if (action === 'delete-book'){
+    const book = bookById(id); if (!book) return;
+    if (!confirm(`Supprimer « ${book.title} » et tout son historique ?`)) return;
+    data.books = data.books.filter(b=>b.id!==id); data.logs = data.logs.filter(l=>l.bookId!==id);
+    closeModal(); save(); render(); toast('Livre supprimé.'); return;
+  }
+  if (action === 'delete-log'){
+    if (!confirm('Supprimer cette session ?')) return;
+    data.logs = data.logs.filter(l=>l.id!==id); save(); render(); toast('Session supprimée.'); return;
+  }
+  if (action === 'search-openlibrary'){ searchBooksOnline(); return; }
+  if (action === 'scan-camera'){scanCamera();return;}
+  if (action === 'scan-photo'){$('#barcodePhoto')?.click();return;}
+  if (action === 'stop-camera'){stopCamera();if($('#scanView'))$('#scanView').innerHTML='';return;}
+  if (action === 'export'){ exportData(); return; }
+  if (action === 'import'){ $('#importFile').click(); return; }
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-view],[data-action],[data-slot],[data-slot-button],[data-furniture],[data-wall],[data-floor],[data-theme],[data-book],[data-result]');
+  if (!el){ if (e.target.classList.contains('modal-scrim')) closeModal(); return; }
+  if (el.dataset.view){ ui.view = el.dataset.view; render(); return; }
+  if (el.dataset.book){ bookModal(el.dataset.book); return; }
+  if (el.dataset.slot){ ui.slot = el.dataset.slot; render(); return; }
+  if (el.dataset.slotButton){ ui.slot = el.dataset.slotButton; render(); return; }
+  if (el.dataset.furniture !== undefined){ changeSlotValue(ui.slot, el.dataset.furniture); return; }
+  if (el.dataset.theme){const room=activeRoom();room.theme=el.dataset.theme;room.wall=themes[room.theme][2];room.floor=themes[room.theme][3];save();render();return;}
+  if (el.dataset.wall){ activeRoom().wall = el.dataset.wall; save(); render(); return; }
+  if (el.dataset.floor){ activeRoom().floor = el.dataset.floor; save(); render(); return; }
+  if (el.dataset.result !== undefined){
+    const result = $('#bookMatches')?._results?.[Number(el.dataset.result)];
+    if (!result) return;
+    $('#bookTitle').value = result.title || '';
+    $('#bookAuthor').value = result.author || '';
+    if (result.pages) $('#bookPages').value = result.pages;
+    if (result.cover) $('#bookCover').value = result.cover;
+    if (result.isbn) $('#bookIsbn').value = result.isbn;
+    $('#bookMatches').innerHTML = '<div class="empty-inline">✓ Livre sélectionné. Vérifie le nombre de pages de ton édition, puis enregistre.</div>';
+    return;
+  }
+  if (el.dataset.action){ handleAction(el.dataset.action, el); }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.id==='barcodePhoto'){scanPhoto(e.target.files?.[0]);return;}
+  if (e.target.id==='roomChooser'){ ui.roomId = e.target.value; ui.slot='shelfA'; render(); }
+  if (e.target.id==='statusFilter'){ ui.bookStatus = e.target.value; render(); }
+  if (e.target.id==='yearPick'){ ui.year = Number(e.target.value); render(); }
+  if (e.target.id==='monthPick'){ ui.month = Number(e.target.value); render(); }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'bookFilter'){ ui.bookSearch = e.target.value; render(); $('#bookFilter').focus(); $('#bookFilter').setSelectionRange(ui.bookSearch.length, ui.bookSearch.length); }
+});
+
+document.addEventListener('submit', e => {
+  if (e.target.id === 'bookForm'){ e.preventDefault(); saveBookFromForm(e.target); }
+  if (e.target.id === 'logForm'){ e.preventDefault(); saveLogFromForm(e.target); }
+  if (e.target.id === 'quickLogForm'){ e.preventDefault(); saveLogFromForm(e.target); }
+});
+
+document.addEventListener('keydown', e => { if (e.key==='Escape' && ui.modal) closeModal(); if(e.key==='Enter'&&e.target.id==='catalogQuery'){e.preventDefault();searchBooksOnline();} });
+
+$('#importFile').addEventListener('change', async e => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try{
+    const json = JSON.parse(await file.text());
+    const restored = migrate(json);
+    if (!restored) throw new Error('Format');
+    if (!confirm('Importer cette sauvegarde remplacera les données actuelles. Continuer ?')) return;
+    data = restored; ui.roomId = data.rooms[0].id; ui.slot='shelfA'; ui.view='rooms'; save(); render(); toast('Sauvegarde importée.');
+  } catch {
+    toast('Fichier non reconnu.');
+  } finally { e.target.value=''; }
+});
+
+render();
+
+</script>
+</body>
+</html>
