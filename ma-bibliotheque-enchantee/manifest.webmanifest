@@ -1,0 +1,19 @@
+{
+  "name": "Ma Bibliothèque Enchantée ♡",
+  "short_name": "Ma Bibliothèque",
+  "description": "Carnet de lecture cosy et girly : bibliothèque, statistiques, coups de cœur, collections et Book Awards.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff8f5",
+  "theme_color": "#fff6f4",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
